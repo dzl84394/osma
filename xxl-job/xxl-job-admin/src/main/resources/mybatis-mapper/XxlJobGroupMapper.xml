@@ -48,7 +48,8 @@
 			`title` = #{title},
 			`address_type` = #{addressType},
 			`address_list` = #{addressList},
-			`update_time` = #{updateTime}
+			`update_time` = #{updateTime},
+			`access_token` = #{accessToken}
 		WHERE id = #{id}
 	</update>
 

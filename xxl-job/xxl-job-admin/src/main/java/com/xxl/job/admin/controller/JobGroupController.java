@@ -1,5 +1,6 @@
 package com.xxl.job.admin.controller;
 
+import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobRegistry;
@@ -13,6 +14,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -155,7 +157,9 @@ public class JobGroupController {
 
 		// process
 		xxlJobGroup.setUpdateTime(new Date());
-
+		if(Strings.isNullOrEmpty(xxlJobGroup.getAccessToken())){
+			xxlJobGroup.setAccessToken(generateUUID());
+		}
 		int ret = xxlJobGroupDao.update(xxlJobGroup);
 		return (ret>0)?ReturnT.SUCCESS:ReturnT.FAIL;
 	}
