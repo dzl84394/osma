@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xxl.job.admin.dao.OperateLogDao">
+
+    <resultMap id="BaseResultMap" type="com.xxl.job.admin.core.model.OperateLog">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="application_name" property="applicationName" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="operation_type" property="operationType" jdbcType="VARCHAR"/>
+        <result column="job_id" property="jobId" jdbcType="BIGINT"/>
+        <result column="record" property="record" jdbcType="LONGVARCHAR"/>
+        <result column="old_value" property="oldValue" jdbcType="LONGVARCHAR"/>
+        <result column="new_value" property="newValue" jdbcType="LONGVARCHAR"/>
+        <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="selectById" parameterType="long" resultMap="BaseResultMap">
+        SELECT * FROM operate_log WHERE id = #{id}
+    </select>
+
+    <select id="selectByJobId" parameterType="long" resultMap="BaseResultMap">
+        SELECT * FROM operate_log WHERE job_id = #{jobId} ORDER BY operate_time DESC
+    </select>
+
+    <select id="selectByOperateTimeBetween" resultMap="BaseResultMap">
+        SELECT * FROM operate_log
+        WHERE operate_time BETWEEN #{start} AND #{end}
+        ORDER BY operate_time DESC
+    </select>
+
+    <select id="selectPage" resultMap="BaseResultMap">
+        SELECT * FROM operate_log
+        ORDER BY operate_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="selectPageByJobId" resultMap="BaseResultMap">
+        SELECT * FROM operate_log
+        WHERE job_id = #{jobId}
+        ORDER BY operate_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM operate_log
+    </select>
+
+    <select id="countByJobId" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM operate_log WHERE job_id = #{jobId}
+    </select>
+
+</mapper>
