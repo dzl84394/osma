@@ -28,12 +28,12 @@ $(function() {
 			{
 				"data": 'appname',
 				"visible" : true,
-				"width":'30%'
+				"width":'20%'
 			},
 			{
 				"data": 'title',
 				"visible" : true,
-				"width":'30%'
+				"width":'20%'
 			},
 			{
 				"data": 'addressType',
@@ -58,6 +58,12 @@ $(function() {
 						:I18n.system_empty;
 				}
 			},
+
+            {
+                "data": 'accessToken',
+                "visible" : true,
+                "width":'20%'
+            },
 			{
 				"data": I18n.system_opt ,
 				"width":'15%',

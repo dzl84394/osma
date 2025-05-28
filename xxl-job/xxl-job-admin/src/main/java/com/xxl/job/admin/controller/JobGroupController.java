@@ -100,9 +100,17 @@ public class JobGroupController {
 
 		// process
 		xxlJobGroup.setUpdateTime(new Date());
-
+		xxlJobGroup.setAccessToken(generateUUID());
 		int ret = xxlJobGroupDao.save(xxlJobGroup);
 		return (ret>0)?ReturnT.SUCCESS:ReturnT.FAIL;
+	}
+
+	/**
+	 * 生成一个去掉中划线的UUID字符串
+	 * @return 无中划线的UUID字符串
+	 */
+	public static String generateUUID() {
+		return UUID.randomUUID().toString().replace("-", "");
 	}
 
 	@RequestMapping("/update")

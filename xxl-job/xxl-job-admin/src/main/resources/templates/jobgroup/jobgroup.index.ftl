@@ -57,6 +57,7 @@
                                         <th name="title" >${I18n.jobgroup_field_title}</th>
                                         <th name="addressType" >${I18n.jobgroup_field_addressType}</th>
                                         <th name="registryList" >OnLine ${I18n.jobgroup_field_registryList}</th>
+										<th name="accessToken" >accessToken</th>
                                         <th>${I18n.system_opt}</th>
 					                </tr>
 				                </thead>
