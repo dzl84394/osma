@@ -1,7 +1,12 @@
 package com.xxl.job.admin.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
+import com.xxl.job.admin.core.model.XxlJobGroup;
+import com.xxl.job.admin.core.util.JacksonUtil;
+import com.xxl.job.admin.dao.XxlJobGroupDao;
 import com.xxl.job.core.biz.AdminBiz;
 import com.xxl.job.core.biz.model.HandleCallbackParam;
 import com.xxl.job.core.biz.model.RegistryParam;
@@ -28,6 +33,9 @@ public class JobApiController {
     @Resource
     private AdminBiz adminBiz;
 
+    @Resource
+    public XxlJobGroupDao xxlJobGroupDao;
+
     /**
      * api
      *
@@ -47,10 +55,25 @@ public class JobApiController {
         if (uri==null || uri.trim().length()==0) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, uri-mapping empty.");
         }
-        if (XxlJobAdminConfig.getAdminConfig().getAccessToken()!=null
-                && XxlJobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
-                && !XxlJobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(XxlJobRemotingUtil.XXL_JOB_ACCESS_TOKEN))) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "The access token is wrong.");
+        String accessToken = request.getHeader(XxlJobRemotingUtil.XXL_JOB_ACCESS_TOKEN);
+
+        JsonNode node = JacksonUtil.stringToJsonObject(data);
+//      {"registryGroup":"EXECUTOR","registryKey":"xxl-job-executor-sample","registryValue":"http://192.168.31.184:9999/"}
+        String appnanme = node.get("registryKey").asText();
+
+        if (Strings.isNullOrEmpty(accessToken)||Strings.isNullOrEmpty(appnanme)){
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "The access token is not founnd.");
+        }
+//        if (XxlJobAdminConfig.getAdminConfig().getAccessToken()!=null
+//                && XxlJobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
+//                && !XxlJobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(XxlJobRemotingUtil.XXL_JOB_ACCESS_TOKEN))) {
+//            return new ReturnT<String>(ReturnT.FAIL_CODE, "The access token is wrong.");
+//        }
+        List<XxlJobGroup> groups = xxlJobGroupDao.findByAppname(appnanme);
+        if (groups==null||groups.isEmpty()){
+            if (!appnanme.equals(groups.get(0).getAccessToken())){
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "The access token is wrong.");
+            }
         }
 
         // services mapping
