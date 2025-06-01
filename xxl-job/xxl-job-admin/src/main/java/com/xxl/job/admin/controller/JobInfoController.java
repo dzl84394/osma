@@ -79,7 +79,25 @@ public class JobInfoController {
 		
 		return xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
 	}
-	
+
+	@RequestMapping("/checkList")
+	@ResponseBody
+	public ReturnT<List> checkList(@RequestParam(value = "start", required = false, defaultValue = "0") int start,
+										@RequestParam(value = "length", required = false, defaultValue = "10") int length,
+										@RequestParam("jobGroup") int jobGroup,
+										@RequestParam("triggerStatus") int triggerStatus,
+										@RequestParam("jobDesc") String jobDesc,
+										@RequestParam("executorHandler") String executorHandler,
+										@RequestParam("author") String author,
+										@RequestParam("startDate") String startDate,
+										 @RequestParam("endDate") String endDate) {
+//,Date startDate ,Date endDate
+		Date startTime = DateUtil.parse(startDate,"yyyy-MM-dd HH:mm:ss");
+		Date endTime = DateUtil.parse(endDate,"yyyy-MM-dd HH:mm:ss");
+
+		return xxlJobService.checkList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author,startTime,endTime);
+	}
+
 	@RequestMapping("/add")
 	@ResponseBody
 	public ReturnT<String> add(HttpServletRequest request, XxlJobInfo jobInfo) {

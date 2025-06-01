@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 public class XxlJobUser {
 	
 	private int id;
+	private String dept;
 	private String username;		// 账号
 	private String password;		// 密码
 	private int role;				// 角色：0-普通用户、1-管理员
@@ -70,4 +71,11 @@ public class XxlJobUser {
 
 	}
 
+	public String getDept() {
+		return dept;
+	}
+
+	public void setDept(String dept) {
+		this.dept = dept;
+	}
 }

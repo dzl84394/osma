@@ -48,12 +48,13 @@ public class JobGroupController {
 	public Map<String, Object> pageList(HttpServletRequest request,
 										@RequestParam(value = "start", required = false, defaultValue = "0") int start,
 										@RequestParam(value = "length", required = false, defaultValue = "10") int length,
+										@RequestParam(value = "dept", required = false, defaultValue = "") String dept,
 										@RequestParam("appname") String appname,
 										@RequestParam("title") String title) {
 
 		// page query
-		List<XxlJobGroup> list = xxlJobGroupDao.pageList(start, length, appname, title);
-		int list_count = xxlJobGroupDao.pageListCount(start, length, appname, title);
+		List<XxlJobGroup> list = xxlJobGroupDao.pageList(start, length, appname, title,dept);
+		int list_count = xxlJobGroupDao.pageListCount(start, length, appname, title,dept);
 
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();

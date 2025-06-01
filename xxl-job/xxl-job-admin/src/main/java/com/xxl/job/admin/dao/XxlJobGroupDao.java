@@ -29,11 +29,13 @@ public interface XxlJobGroupDao {
     public List<XxlJobGroup> pageList(@Param("offset") int offset,
                                       @Param("pagesize") int pagesize,
                                       @Param("appname") String appname,
-                                      @Param("title") String title);
+                                      @Param("title") String title,
+                                      @Param("dept") String dept);
 
     public int pageListCount(@Param("offset") int offset,
                              @Param("pagesize") int pagesize,
                              @Param("appname") String appname,
-                             @Param("title") String title);
+                             @Param("title") String title,
+                             @Param("dept") String dept);
 
 }

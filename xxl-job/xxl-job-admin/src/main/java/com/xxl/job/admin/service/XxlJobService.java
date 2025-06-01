@@ -6,6 +6,7 @@ import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.core.biz.model.ReturnT;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +28,8 @@ public interface XxlJobService {
 	 * @return
 	 */
 	public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author);
+
+	public ReturnT<List> checkList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author, Date startDate , Date endDate);
 
 	/**
 	 * add job

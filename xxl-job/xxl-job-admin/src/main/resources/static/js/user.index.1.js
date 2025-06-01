@@ -12,6 +12,7 @@ $(function() {
 	        	var obj = {};
                 obj.username = $('#username').val();
                 obj.role = $('#role').val();
+                obj.dept = $('#dept').val();
 	        	obj.start = d.start;
 	        	obj.length = d.length;
                 return obj;
@@ -39,6 +40,11 @@ $(function() {
                             return '*********';
                         }
 					},
+					{
+                        "data": 'dept',
+                        "visible" : true,
+                        "width":'20%'
+                    },
 					{
 						"data": 'role',
 						"visible" : true,
@@ -203,6 +209,7 @@ $(function() {
 			var paramData = {
 				"username": $("#addModal .form input[name=username]").val(),
                 "password": $("#addModal .form input[name=password]").val(),
+                "dept": $("#addModal .form input[name=dept]").val(),
                 "role": $("#addModal .form input[name=role]:checked").val(),
                 "permission": permissionArr.join(',')
 			};
@@ -254,6 +261,7 @@ $(function() {
 		$("#updateModal .form input[name='id']").val( row.id );
 		$("#updateModal .form input[name='username']").val( row.username );
 		$("#updateModal .form input[name='password']").val( '' );
+		$("#updateModal .form input[name='dept']").val( row.dept );
 		$("#updateModal .form input[name='role'][value='"+ row.role +"']").click();
         var permissionArr = [];
         if (row.permission) {
@@ -295,6 +303,7 @@ $(function() {
                 "id": $("#updateModal .form input[name=id]").val(),
                 "username": $("#updateModal .form input[name=username]").val(),
                 "password": $("#updateModal .form input[name=password]").val(),
+                "dept": $("#updateModal .form input[name=dept]").val(),
                 "role": $("#updateModal .form input[name=role]:checked").val(),
                 "permission": permissionArr.join(',')
             };

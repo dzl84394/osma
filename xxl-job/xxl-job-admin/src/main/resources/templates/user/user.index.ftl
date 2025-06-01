@@ -41,6 +41,12 @@
                         <input type="text" class="form-control" id="username" autocomplete="on" >
                     </div>
                 </div>
+				<div class="col-xs-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">部门</span>
+                        <input type="text" class="form-control" id="dept" autocomplete="on" >
+                    </div>
+                </div>
 	            <div class="col-xs-1">
 	            	<button class="btn btn-block btn-info" id="searchBtn">${I18n.system_search}</button>
 	            </div>
@@ -59,6 +65,7 @@
                                         <th name="id" >ID</th>
                                         <th name="username" >${I18n.user_username}</th>
 					                  	<th name="password" >${I18n.user_password}</th>
+										<th name="dept" >部门</th>
                                         <th name="role" >${I18n.user_role}</th>
 					                  	<th name="permission" >${I18n.user_permission}</th>
 					                  	<th>${I18n.system_opt}</th>
@@ -94,6 +101,10 @@
                     <div class="form-group">
                         <label for="lastname" class="col-sm-2 control-label">${I18n.user_password}<font color="red">*</font></label>
                         <div class="col-sm-8"><input type="text" class="form-control" name="password" placeholder="${I18n.system_please_input}${I18n.user_password}" maxlength="20" ></div>
+                    </div>
+   					<div class="form-group">
+                        <label for="dept" class="col-sm-2 control-label">部门</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" name="dept" placeholder="请填写部门" maxlength="20" ></div>
                     </div>
                     <div class="form-group">
                         <label for="lastname" class="col-sm-2 control-label">${I18n.user_role}<font color="red">*</font></label>
@@ -144,6 +155,10 @@
                     <div class="form-group">
                         <label for="lastname" class="col-sm-2 control-label">${I18n.user_password}<font color="red">*</font></label>
                         <div class="col-sm-8"><input type="text" class="form-control" name="password" placeholder="${I18n.user_password_update_placeholder}" maxlength="20" ></div>
+                    </div>
+ 					<div class="form-group">
+                        <label for="dept" class="col-sm-2 control-label">部门<font color="red">*</font></label>
+                        <div class="col-sm-8"><input type="text" class="form-control" name="dept" placeholder="" maxlength="20" ></div>
                     </div>
                     <div class="form-group">
                         <label for="lastname" class="col-sm-2 control-label">${I18n.user_role}<font color="red">*</font></label>

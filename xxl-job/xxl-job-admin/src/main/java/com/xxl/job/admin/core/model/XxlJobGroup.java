@@ -17,6 +17,7 @@ public class XxlJobGroup {
     private String addressList;     // 执行器地址列表，多地址逗号分隔(手动录入)
     private Date updateTime;
     private String accessToken;
+    private String dept;
     // registry list
     private List<String> registryList;  // 执行器地址列表(系统注册)
     public List<String> getRegistryList() {
@@ -80,5 +81,13 @@ public class XxlJobGroup {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
     }
 }

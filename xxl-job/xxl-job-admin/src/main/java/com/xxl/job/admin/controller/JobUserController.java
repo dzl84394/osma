@@ -41,7 +41,8 @@ public class JobUserController {
         // 执行器列表
         List<XxlJobGroup> groupList = xxlJobGroupDao.findAll();
         model.addAttribute("groupList", groupList);
-
+        List<String> depts = xxlJobUserDao.selectDistinctDept();
+        model.addAttribute("deptList", depts);
         return "user/user.index";
     }
 
@@ -51,11 +52,11 @@ public class JobUserController {
     public Map<String, Object> pageList(@RequestParam(value = "start", required = false, defaultValue = "0") int start,
                                         @RequestParam(value = "length", required = false, defaultValue = "10") int length,
                                         @RequestParam("username") String username,
-                                        @RequestParam("role") int role) {
+                                        @RequestParam("role") int role, @RequestParam("dept") String dept) {
 
         // page list
-        List<XxlJobUser> list = xxlJobUserDao.pageList(start, length, username, role);
-        int list_count = xxlJobUserDao.pageListCount(start, length, username, role);
+        List<XxlJobUser> list = xxlJobUserDao.pageList(start, length, username, role,dept);
+        int list_count = xxlJobUserDao.pageListCount(start, length, username, role,dept);
 
         // filter
         if (list!=null && list.size()>0) {
@@ -69,6 +70,7 @@ public class JobUserController {
         maps.put("recordsTotal", list_count);		// 总记录数
         maps.put("recordsFiltered", list_count);	// 过滤后的总记录数
         maps.put("data", list);  					// 分页列表
+
         return maps;
     }
 

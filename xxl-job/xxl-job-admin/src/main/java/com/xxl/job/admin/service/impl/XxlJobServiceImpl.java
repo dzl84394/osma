@@ -60,6 +60,30 @@ public class XxlJobServiceImpl implements XxlJobService {
 		return maps;
 	}
 
+    @Override
+	public ReturnT<List> checkList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author ,Date startDate ,Date endDate)  {
+
+		// page list
+		List<XxlJobInfo> jobs = xxlJobInfoDao.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
+		List<XxlJobInfo> list2 = new ArrayList<>();
+		for (XxlJobInfo job : jobs) {
+            boolean affectedJob = false;
+            try {
+                affectedJob = JobScheduleHelper.checkJobAffected(job, startDate, endDate);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            if (affectedJob){
+				list2.add(job);
+			}
+		}
+
+		// package result
+		Map<String, Object> maps = new HashMap<String, Object>();
+		maps.put("data", list2);  					// 分页列表
+		return new ReturnT<List>(list2);
+	}
+
 	@Override
 	public ReturnT<String> add(XxlJobInfo jobInfo, XxlJobUser loginUser) {
 

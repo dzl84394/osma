@@ -6,6 +6,7 @@
 	<resultMap id="XxlJobGroup" type="com.xxl.job.admin.core.model.XxlJobGroup" >
 		<result column="id" property="id" />
 	    <result column="app_name" property="appname" />
+		<result column="dept" property="dept" />
 	    <result column="title" property="title" />
 		<result column="address_type" property="addressType" />
 		<result column="address_list" property="addressList" />
@@ -18,6 +19,7 @@
 		t.id,
 		t.app_name,
 		t.title,
+		t.dept,
 		t.address_type,
 		t.address_list,
 		t.update_time,
@@ -46,8 +48,8 @@
 
 
 	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobGroup" useGeneratedKeys="true" keyProperty="id" >
-		INSERT INTO xxl_job_group ( `app_name`, `title`, `address_type`, `address_list`, `update_time`,`access_token`)
-		values ( #{appname}, #{title}, #{addressType}, #{addressList}, #{updateTime}, #{accessToken} );
+		INSERT INTO xxl_job_group ( `app_name`, `title`, `address_type`, `address_list`, `update_time`,`access_token`,`dept`)
+		values ( #{appname}, #{title}, #{addressType}, #{addressList}, #{updateTime}, #{accessToken}, #{dept} );
 	</insert>
 
 	<update id="update" parameterType="com.xxl.job.admin.core.model.XxlJobGroup" >
@@ -57,7 +59,8 @@
 			`address_type` = #{addressType},
 			`address_list` = #{addressList},
 			`update_time` = #{updateTime},
-			`access_token` = #{accessToken}
+			`access_token` = #{accessToken},
+			`dept` = #{dept}
 		WHERE id = #{id}
 	</update>
 
@@ -82,6 +85,9 @@
 			<if test="title != null and title != ''">
 				AND t.title like CONCAT(CONCAT('%', #{title}), '%')
 			</if>
+			<if test="dept != null and dept != ''">
+				AND t.dept like CONCAT(CONCAT('%', #{dept}), '%')
+			</if>
 		</trim>
 		ORDER BY t.app_name, t.title, t.id ASC
 		LIMIT #{offset}, #{pagesize}
@@ -96,6 +102,9 @@
 			</if>
 			<if test="title != null and title != ''">
 				AND t.title like CONCAT(CONCAT('%', #{title}), '%')
+			</if>
+			<if test="dept != null and dept != ''">
+				AND t.dept like CONCAT(CONCAT('%', #{dept}), '%')
 			</if>
 		</trim>
 	</select>

@@ -14,11 +14,13 @@ public interface XxlJobUserDao {
 	public List<XxlJobUser> pageList(@Param("offset") int offset,
                                      @Param("pagesize") int pagesize,
                                      @Param("username") String username,
-									 @Param("role") int role);
+									 @Param("role") int role,
+									 @Param("dept") String dept);
 	public int pageListCount(@Param("offset") int offset,
 							 @Param("pagesize") int pagesize,
 							 @Param("username") String username,
-							 @Param("role") int role);
+							 @Param("role") int role,
+							 @Param("dept") String dept);
 
 	public XxlJobUser loadByUserName(@Param("username") String username);
 
@@ -27,5 +29,6 @@ public interface XxlJobUserDao {
 	public int update(XxlJobUser xxlJobUser);
 	
 	public int delete(@Param("id") int id);
-
+	// 查询所有不同的部门名称
+	List<String> selectDistinctDept();
 }

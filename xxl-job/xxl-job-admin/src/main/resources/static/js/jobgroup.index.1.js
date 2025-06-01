@@ -12,6 +12,7 @@ $(function() {
 				var obj = {};
 				obj.appname = $('#appname').val();
 				obj.title = $('#title').val();
+				obj.dept = $('#dept').val();
 				obj.start = d.start;
 				obj.length = d.length;
 				return obj;
@@ -26,14 +27,19 @@ $(function() {
 				"visible" : false
 			},
 			{
+                "data": 'dept',
+                "visible" : true,
+                "width":'10%'
+            },
+			{
 				"data": 'appname',
 				"visible" : true,
-				"width":'20%'
+				"width":'10%'
 			},
 			{
 				"data": 'title',
 				"visible" : true,
-				"width":'20%'
+				"width":'15%'
 			},
 			{
 				"data": 'addressType',
@@ -294,6 +300,7 @@ $(function() {
 		var row = tableData['key'+id];
 
 		$("#updateModal .form input[name='id']").val( row.id );
+		$("#updateModal .form input[name='dept']").val( row.dept );
 		$("#updateModal .form input[name='appname']").val( row.appname );
 		$("#updateModal .form input[name='title']").val( row.title );
 

@@ -9,6 +9,7 @@
 	    <result column="password" property="password" />
 	    <result column="role" property="role" />
 	    <result column="permission" property="permission" />
+		<result column="dept" property="dept" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -16,6 +17,7 @@
 		t.username,
 		t.password,
 		t.role,
+		t.dept,
 		t.permission
 	</sql>
 
@@ -28,6 +30,9 @@
 			</if>
 			<if test="role gt -1">
 				AND t.role = #{role}
+			</if>
+			<if test="dept != null and dept != ''">
+				AND t.dept LIKE CONCAT('%', #{dept}, '%')
 			</if>
 		</trim>
 		ORDER BY username ASC
@@ -44,6 +49,9 @@
 			<if test="role gt -1">
 				AND t.role = #{role}
 			</if>
+			<if test="dept != null and dept != ''">
+				AND t.dept LIKE CONCAT('%', #{dept}, '%')
+			</if>
 		</trim>
 	</select>
 
@@ -58,12 +66,12 @@
 			username,
 			password,
 			role,
-			permission
+			permission,dept
 		) VALUES (
 			#{username},
 			#{password},
 			#{role},
-			#{permission}
+			#{permission},#{dept}
 		);
 	</insert>
 
@@ -74,7 +82,8 @@
 				password = #{password},
 			</if>
 			role = #{role},
-			permission = #{permission}
+			permission = #{permission},
+			dept = #{dept}
 		WHERE id = #{id}
 	</update>
 
@@ -84,4 +93,7 @@
 		WHERE id = #{id}
 	</delete>
 
+	<select id="selectDistinctDept" resultType="string">
+		SELECT DISTINCT dept FROM xxl_job_user WHERE dept IS NOT NULL AND dept != ''
+	</select>
 </mapper>
