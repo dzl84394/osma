@@ -1,5 +1,6 @@
 package com.xxl.job.admin.controller;
 
+import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
 import com.xxl.job.admin.controller.interceptor.PermissionInterceptor;
 import com.xxl.job.admin.core.model.XxlJobGroup;
@@ -7,9 +8,11 @@ import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.admin.dao.XxlJobGroupDao;
 import com.xxl.job.admin.dao.XxlJobUserDao;
+import com.xxl.job.admin.service.impl.LoginService;
 import com.xxl.job.core.biz.model.ReturnT;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
@@ -34,6 +37,9 @@ public class JobUserController {
     @Resource
     private XxlJobGroupDao xxlJobGroupDao;
 
+    @Resource
+    private LoginService loginService;
+
     @RequestMapping
     @PermissionLimit(adminuser = true)
     public String index(Model model) {
@@ -52,11 +58,19 @@ public class JobUserController {
     public Map<String, Object> pageList(@RequestParam(value = "start", required = false, defaultValue = "0") int start,
                                         @RequestParam(value = "length", required = false, defaultValue = "10") int length,
                                         @RequestParam("username") String username,
-                                        @RequestParam("role") int role, @RequestParam("dept") String dept) {
+                                        @RequestParam("role") int role,
+                                        @RequestParam(value = "dept", required = false, defaultValue = "") String dept,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response) {
 
+        XxlJobUser user = loginService.ifLogin(request, response);
+        //如果自己是管理员，但是只有
+        if (!Strings.isNullOrEmpty(user.getDept())){
+            dept = user.getDept();
+        }
         // page list
         List<XxlJobUser> list = xxlJobUserDao.pageList(start, length, username, role,dept);
-        int list_count = xxlJobUserDao.pageListCount(start, length, username, role,dept);
+        int list_count = xxlJobUserDao.pageListCount(start, length, username, role,user.getDept());
 
         // filter
         if (list!=null && list.size()>0) {

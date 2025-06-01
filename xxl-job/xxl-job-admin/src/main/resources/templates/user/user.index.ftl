@@ -41,12 +41,14 @@
                         <input type="text" class="form-control" id="username" autocomplete="on" >
                     </div>
                 </div>
-				<div class="col-xs-3">
-                    <div class="input-group">
-                        <span class="input-group-addon">部门</span>
-                        <input type="text" class="form-control" id="dept" autocomplete="on" >
-                    </div>
-                </div>
+				<#if loginUser.role == 1 && (loginUser.dept?has_content == false)>
+					<div class="col-xs-3">
+						<div class="input-group">
+							<span class="input-group-addon">部门</span>
+							<input type="text" class="form-control" id="dept" autocomplete="on" >
+						</div>
+					</div>
+				</#if>
 	            <div class="col-xs-1">
 	            	<button class="btn btn-block btn-info" id="searchBtn">${I18n.system_search}</button>
 	            </div>

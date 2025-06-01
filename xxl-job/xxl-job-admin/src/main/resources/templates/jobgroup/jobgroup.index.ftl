@@ -25,12 +25,14 @@
 	    <section class="content">
 
             <div class="row">
+				<#if loginUser.role == 1 && (loginUser.dept?has_content == false)>
 				<div class="col-xs-3">
                     <div class="input-group">
                         <span class="input-group-addon">dept</span>
                         <input type="text" class="form-control" id="dept"  >
                     </div>
                 </div>
+				</#if>
                 <div class="col-xs-3">
                     <div class="input-group">
                         <span class="input-group-addon">AppName</span>

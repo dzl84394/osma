@@ -4,14 +4,17 @@ import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobRegistry;
+import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.admin.dao.XxlJobGroupDao;
 import com.xxl.job.admin.dao.XxlJobInfoDao;
 import com.xxl.job.admin.dao.XxlJobRegistryDao;
+import com.xxl.job.admin.service.impl.LoginService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.RegistryConfig;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -42,6 +45,9 @@ public class JobGroupController {
 		return "jobgroup/jobgroup.index";
 	}
 
+	@Resource
+	private LoginService loginService;
+
 	@RequestMapping("/pageList")
 	@ResponseBody
 	@PermissionLimit(adminuser = true)
@@ -50,8 +56,12 @@ public class JobGroupController {
 										@RequestParam(value = "length", required = false, defaultValue = "10") int length,
 										@RequestParam(value = "dept", required = false, defaultValue = "") String dept,
 										@RequestParam("appname") String appname,
-										@RequestParam("title") String title) {
-
+										@RequestParam("title") String title,
+										HttpServletResponse response) {
+		XxlJobUser user = loginService.ifLogin(request, response);
+		if (!Strings.isNullOrEmpty(user.getDept())){
+			dept = user.getDept();
+		}
 		// page query
 		List<XxlJobGroup> list = xxlJobGroupDao.pageList(start, length, appname, title,dept);
 		int list_count = xxlJobGroupDao.pageListCount(start, length, appname, title,dept);
