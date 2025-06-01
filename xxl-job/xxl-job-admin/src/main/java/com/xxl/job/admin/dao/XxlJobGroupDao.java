@@ -13,7 +13,7 @@ import java.util.List;
 public interface XxlJobGroupDao {
 
     public List<XxlJobGroup> findAll();
-
+    public List<XxlJobGroup> findAll2( @Param("dept") String dept);
     public List<XxlJobGroup> findByAddressType(@Param("addressType") int addressType);
 
     public List<XxlJobGroup> findByAppname(@Param("appname") String appname);

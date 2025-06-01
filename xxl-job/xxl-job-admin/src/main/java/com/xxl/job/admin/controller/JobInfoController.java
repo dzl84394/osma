@@ -1,5 +1,6 @@
 package com.xxl.job.admin.controller;
 
+import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.interceptor.PermissionInterceptor;
 import com.xxl.job.admin.core.exception.XxlJobException;
 import com.xxl.job.admin.core.model.XxlJobGroup;
@@ -12,12 +13,14 @@ import com.xxl.job.admin.core.thread.JobScheduleHelper;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.admin.dao.XxlJobGroupDao;
 import com.xxl.job.admin.service.XxlJobService;
+import com.xxl.job.admin.service.impl.LoginService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import com.xxl.job.core.util.DateUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -41,9 +44,13 @@ public class JobInfoController {
 	private XxlJobGroupDao xxlJobGroupDao;
 	@Resource
 	private XxlJobService xxlJobService;
-	
+	@Resource
+	private LoginService loginService;
 	@RequestMapping
-	public String index(HttpServletRequest request, Model model, @RequestParam(value = "jobGroup", required = false, defaultValue = "-1") int jobGroup) {
+	public String index(HttpServletRequest request
+			, HttpServletResponse response
+			, Model model
+			, @RequestParam(value = "jobGroup", required = false, defaultValue = "-1") int jobGroup) {
 
 		// 枚举-字典
 		model.addAttribute("ExecutorRouteStrategyEnum", ExecutorRouteStrategyEnum.values());	    // 路由策略-列表
@@ -52,8 +59,13 @@ public class JobInfoController {
 		model.addAttribute("ScheduleTypeEnum", ScheduleTypeEnum.values());	    				// 调度类型
 		model.addAttribute("MisfireStrategyEnum", MisfireStrategyEnum.values());	    			// 调度过期策略
 
+		XxlJobUser user = loginService.ifLogin(request, response);
+		String dept = "";
+		if (!Strings.isNullOrEmpty(user.getDept())){
+			dept = user.getDept();
+		}
 		// 执行器列表
-		List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
+		List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll2(dept);
 
 		// filter group
 		List<XxlJobGroup> jobGroupList = PermissionInterceptor.filterJobGroupByRole(request, jobGroupList_all);

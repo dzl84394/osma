@@ -32,6 +32,17 @@
 		ORDER BY t.app_name, t.title, t.id ASC
 	</select>
 
+	<select id="findAll2" parameterType="java.lang.String" resultMap="XxlJobGroup">
+		SELECT <include refid="Base_Column_List" />
+		FROM xxl_job_group AS t
+		<trim prefix="WHERE" prefixOverrides="AND | OR" >
+			<if test="dept != null and dept != ''">
+				AND t.dept like CONCAT(CONCAT('%', #{dept}), '%')
+			</if>
+		</trim>
+		ORDER BY t.app_name, t.title, t.id ASC
+	</select>
+
 	<select id="findByAddressType" parameterType="java.lang.Integer" resultMap="XxlJobGroup">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_group AS t

@@ -1,16 +1,19 @@
 package com.xxl.job.admin.controller;
 
+import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.interceptor.PermissionInterceptor;
 import com.xxl.job.admin.core.complete.XxlJobCompleter;
 import com.xxl.job.admin.core.exception.XxlJobException;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobInfo;
 import com.xxl.job.admin.core.model.XxlJobLog;
+import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.scheduler.XxlJobScheduler;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.admin.dao.XxlJobGroupDao;
 import com.xxl.job.admin.dao.XxlJobInfoDao;
 import com.xxl.job.admin.dao.XxlJobLogDao;
+import com.xxl.job.admin.service.impl.LoginService;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.model.KillParam;
 import com.xxl.job.core.biz.model.LogParam;
@@ -19,6 +22,7 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.util.DateUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -49,12 +53,21 @@ public class JobLogController {
 	public XxlJobInfoDao xxlJobInfoDao;
 	@Resource
 	public XxlJobLogDao xxlJobLogDao;
+	@Resource
+	private LoginService loginService;
 
 	@RequestMapping
-	public String index(HttpServletRequest request, Model model, @RequestParam(value = "jobId", required = false, defaultValue = "0") Integer jobId) {
-
+	public String index(HttpServletRequest request
+			, HttpServletResponse response
+			, Model model
+			, @RequestParam(value = "jobId", required = false, defaultValue = "0") Integer jobId) {
+		XxlJobUser user = loginService.ifLogin(request, response);
+		String dept = "";
+		if (!Strings.isNullOrEmpty(user.getDept())){
+			dept = user.getDept();
+		}
 		// 执行器列表
-		List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
+		List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll2(dept);
 
 		// filter group
 		List<XxlJobGroup> jobGroupList = PermissionInterceptor.filterJobGroupByRole(request, jobGroupList_all);
