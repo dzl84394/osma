@@ -61,7 +61,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 	}
 
     @Override
-	public ReturnT<List> checkList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author ,Date startDate ,Date endDate)  {
+	public Map<String, Object> checkList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author ,Date startDate ,Date endDate)  {
 
 		// page list
 		List<XxlJobInfo> jobs = xxlJobInfoDao.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
@@ -81,7 +81,9 @@ public class XxlJobServiceImpl implements XxlJobService {
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
 		maps.put("data", list2);  					// 分页列表
-		return new ReturnT<List>(list2);
+		maps.put("recordsTotal", list2.size());		// 总记录数
+		maps.put("recordsFiltered", list2.size());	// 过滤后的总记录数
+		return maps;
 	}
 
 	@Override

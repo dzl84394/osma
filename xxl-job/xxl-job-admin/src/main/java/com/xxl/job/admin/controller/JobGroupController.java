@@ -111,6 +111,10 @@ public class JobGroupController {
 			}
 		}
 
+		List<XxlJobGroup> groups = xxlJobGroupDao.findByAppname(xxlJobGroup.getAppname());
+		if (!groups.isEmpty()){
+			return new ReturnT<String>(500,"执行器即（app name）已存在" );
+		}
 		// process
 		xxlJobGroup.setUpdateTime(new Date());
 		xxlJobGroup.setAccessToken(generateUUID());

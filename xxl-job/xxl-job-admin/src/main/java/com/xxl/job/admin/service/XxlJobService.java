@@ -29,7 +29,7 @@ public interface XxlJobService {
 	 */
 	public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author);
 
-	public ReturnT<List> checkList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author, Date startDate , Date endDate);
+	public Map<String, Object> checkList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author, Date startDate , Date endDate);
 
 	/**
 	 * add job

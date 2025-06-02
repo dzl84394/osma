@@ -29,16 +29,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * index controller
  * @author xuxueli 2015-12-19 16:13:16
  */
 @Controller
-@RequestMapping("/jobinfo")
-public class JobInfoController {
-	private static Logger logger = LoggerFactory.getLogger(JobInfoController.class);
+@RequestMapping("/jobinfoCheck")
+public class JobInfoCheckController {
+	private static Logger logger = LoggerFactory.getLogger(JobInfoCheckController.class);
 
 	@Resource
 	private XxlJobGroupDao xxlJobGroupDao;
@@ -76,7 +79,7 @@ public class JobInfoController {
 		model.addAttribute("JobGroupList", jobGroupList);
 		model.addAttribute("jobGroup", jobGroup);
 
-		return "jobinfo/jobinfo.index";
+		return "jobinfoCheck/jobinfoCheck.index";
 	}
 
 	@RequestMapping("/pageList")
@@ -92,7 +95,29 @@ public class JobInfoController {
 		return xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
 	}
 
+	@RequestMapping("/checkList")
+	@ResponseBody
+	public Map<String, Object> checkList(@RequestParam(value = "start", required = false, defaultValue = "0") int start,
+										@RequestParam(value = "length", required = false, defaultValue = "10") int length,
+										@RequestParam("jobGroup") int jobGroup,
+										@RequestParam("triggerStatus") int triggerStatus,
+										 @RequestParam(value = "filterTime", required = false, defaultValue = "") String filterTime) {
+		// parse param
+		Date startTime = null;
+		Date endTime = null;
+		if (filterTime!=null && filterTime.trim().length()>0) {
+			String[] temp = filterTime.split(" - ");
+			if (temp.length == 2) {
+				startTime = DateUtil.parseDateTime(temp[0]);
+				endTime = DateUtil.parseDateTime(temp[1]);
+			}
+		}
 
+
+
+
+		return xxlJobService.checkList(start, length, jobGroup, triggerStatus, "", "", "",startTime,endTime);
+	}
 
 	@RequestMapping("/add")
 	@ResponseBody
