@@ -34,4 +34,5 @@ public interface OperateLogDao {
 
     // 统计某任务ID的记录数
     int countByJobId(@Param("jobId") Long jobId);
+    public int save(OperateLog operateLog);
 }

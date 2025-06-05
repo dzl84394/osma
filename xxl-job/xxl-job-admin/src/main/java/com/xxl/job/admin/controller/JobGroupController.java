@@ -2,10 +2,12 @@ package com.xxl.job.admin.controller;
 
 import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
+import com.xxl.job.admin.core.model.OperateLog;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobRegistry;
 import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
+import com.xxl.job.admin.dao.OperateLogDao;
 import com.xxl.job.admin.dao.XxlJobGroupDao;
 import com.xxl.job.admin.dao.XxlJobInfoDao;
 import com.xxl.job.admin.dao.XxlJobRegistryDao;
@@ -38,10 +40,16 @@ public class JobGroupController {
 	public XxlJobGroupDao xxlJobGroupDao;
 	@Resource
 	private XxlJobRegistryDao xxlJobRegistryDao;
+	@Resource
+	OperateLogDao operateLogDao;
 
 	@RequestMapping
 	@PermissionLimit(adminuser = true)
-	public String index(Model model) {
+	public String index(Model model,
+						HttpServletRequest request,
+						HttpServletResponse response) {
+		XxlJobUser user = loginService.ifLogin(request, response);
+		model.addAttribute("dept", user.getDept());
 		return "jobgroup/jobgroup.index";
 	}
 
@@ -77,7 +85,9 @@ public class JobGroupController {
 	@RequestMapping("/save")
 	@ResponseBody
 	@PermissionLimit(adminuser = true)
-	public ReturnT<String> save(XxlJobGroup xxlJobGroup){
+	public ReturnT<String> save(XxlJobGroup xxlJobGroup
+			,HttpServletRequest request
+			,HttpServletResponse response){
 
 		// valid
 		if (xxlJobGroup.getAppname()==null || xxlJobGroup.getAppname().trim().length()==0) {
@@ -119,6 +129,11 @@ public class JobGroupController {
 		xxlJobGroup.setUpdateTime(new Date());
 		xxlJobGroup.setAccessToken(generateUUID());
 		int ret = xxlJobGroupDao.save(xxlJobGroup);
+
+		XxlJobUser user = loginService.ifLogin(request, response);
+
+		OperateLog log = new OperateLog(xxlJobGroup,"新增执行器",user.getUsername());
+		operateLogDao.save(log);
 		return (ret>0)?ReturnT.SUCCESS:ReturnT.FAIL;
 	}
 
@@ -133,7 +148,9 @@ public class JobGroupController {
 	@RequestMapping("/update")
 	@ResponseBody
 	@PermissionLimit(adminuser = true)
-	public ReturnT<String> update(XxlJobGroup xxlJobGroup){
+	public ReturnT<String> update(XxlJobGroup xxlJobGroup
+			,HttpServletRequest request
+			,HttpServletResponse response){
 		// valid
 		if (xxlJobGroup.getAppname()==null || xxlJobGroup.getAppname().trim().length()==0) {
 			return new ReturnT<String>(500, (I18nUtil.getString("system_please_input")+"AppName") );
@@ -176,6 +193,10 @@ public class JobGroupController {
 			xxlJobGroup.setAccessToken(generateUUID());
 		}
 		int ret = xxlJobGroupDao.update(xxlJobGroup);
+
+		XxlJobUser user = loginService.ifLogin(request, response);
+		OperateLog log = new OperateLog(xxlJobGroup,"编辑执行器",user.getUsername());
+		operateLogDao.save(log);
 		return (ret>0)?ReturnT.SUCCESS:ReturnT.FAIL;
 	}
 
@@ -204,7 +225,8 @@ public class JobGroupController {
 	@RequestMapping("/remove")
 	@ResponseBody
 	@PermissionLimit(adminuser = true)
-	public ReturnT<String> remove(@RequestParam("id") int id){
+	public ReturnT<String> remove(@RequestParam("id") int id,HttpServletRequest request
+			,HttpServletResponse response){
 
 		// valid
 		int count = xxlJobInfoDao.pageListCount(0, 10, id, -1,  null, null, null);
@@ -212,12 +234,17 @@ public class JobGroupController {
 			return new ReturnT<String>(500, I18nUtil.getString("jobgroup_del_limit_0") );
 		}
 
+
 		List<XxlJobGroup> allList = xxlJobGroupDao.findAll();
 		if (allList.size() == 1) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobgroup_del_limit_1") );
 		}
-
+		XxlJobGroup xxlJobGroup = xxlJobGroupDao.load(id);
 		int ret = xxlJobGroupDao.remove(id);
+
+		XxlJobUser user = loginService.ifLogin(request, response);
+		OperateLog log = new OperateLog(xxlJobGroup,"删除执行器",user.getUsername());
+		operateLogDao.save(log);
 		return (ret>0)?ReturnT.SUCCESS:ReturnT.FAIL;
 	}
 

@@ -70,6 +70,27 @@ public class XxlJobUser {
 		}
 
 	}
+	public boolean validPermission(XxlJobGroup jobGroup){
+		if (this.role == 1 ) {//管理员
+
+			if(this.dept!=null){//是总管理员，就直接返回true
+				return true;
+			}else if(jobGroup.getDept().equals(this.dept)){	//如果有部门的管理员，要校验部门
+				return true;
+			}
+			return false;
+		} else {
+			if (StringUtils.hasText(this.permission)) {
+				for (String permissionItem : this.permission.split(",")) {
+					if (String.valueOf(jobGroup).equals(permissionItem)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+	}
 
 	public String getDept() {
 		return dept;

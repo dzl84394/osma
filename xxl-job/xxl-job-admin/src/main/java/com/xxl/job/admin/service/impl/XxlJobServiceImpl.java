@@ -345,6 +345,12 @@ public class XxlJobServiceImpl implements XxlJobService {
 	}
 
 	@Override
+	public ReturnT<XxlJobInfo> loadById(int id) {
+		XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
+		return new ReturnT(xxlJobInfo);
+	}
+
+	@Override
 	public ReturnT<String> start(int id) {
 		// load and valid
 		XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);

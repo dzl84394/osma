@@ -54,7 +54,7 @@ public interface XxlJobService {
 	 * @return
 	 */
 	public ReturnT<String> remove(int id);
-
+	public ReturnT<XxlJobInfo> loadById(int id);
 	/**
 	 * start job
 	 *

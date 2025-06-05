@@ -7,7 +7,7 @@
 
     <resultMap id="BaseResultMap" type="com.xxl.job.admin.core.model.OperateLog">
         <id column="id" property="id" jdbcType="BIGINT"/>
-        <result column="application_name" property="applicationName" jdbcType="VARCHAR"/>
+        <result column="app_id" property="appId" jdbcType="BIGINT"/>
         <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="operation_type" property="operationType" jdbcType="VARCHAR"/>
         <result column="job_id" property="jobId" jdbcType="BIGINT"/>
@@ -52,4 +52,8 @@
         SELECT COUNT(*) FROM operate_log WHERE job_id = #{jobId}
     </select>
 
+    <insert id="save" parameterType="com.xxl.job.admin.core.model.OperateLog" useGeneratedKeys="true" keyProperty="id" >
+        INSERT INTO operate_log ( `app_id`, `username`, `operation_type`, `job_id`, `record`,`operate_time`)
+        values ( #{appId}, #{username}, #{operationType}, #{jobId}, #{record}, #{operateTime} );
+    </insert>
 </mapper>

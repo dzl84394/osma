@@ -176,14 +176,14 @@ commit;
 -------------------
 CREATE TABLE operate_log (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
-    application_name VARCHAR(100) NOT NULL COMMENT '应用名称',
+    appname VARCHAR(100) NOT NULL COMMENT '应用名称',
     username VARCHAR(50) NOT NULL COMMENT '操作用户',
     operation_type VARCHAR(50) NOT NULL COMMENT '操作类型（编辑、删除等）',
-    job_id BIGINT NOT NULL COMMENT '关联任务ID',
+    job_id BIGINT  COMMENT '关联任务ID',
     record TEXT COMMENT '操作描述或备注',
     old_value TEXT COMMENT '修改前的值（JSON或字符串）',
-    new_value TEXT COMMENT COMMENT '修改后的值（可选）',
+    new_value TEXT COMMENT  '修改后的值（可选）',
     operate_time DATETIME NOT NULL COMMENT '操作时间',
-    INDEX idx_job_id (job_id),
-    INDEX idx_operate_time (operate_time)
+    INDEX idx_job_id (job_id)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='操作日志表';

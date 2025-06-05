@@ -108,10 +108,18 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal form" role="form" >
-						<div class="form-group">
-                            <label for="lastname" class="col-sm-2 control-label">dept</label>
-                            <div class="col-sm-10"><input type="text" class="form-control" name="dept"  maxlength="64" ></div>
-                        </div>
+						<#if loginUser.role == 1>
+							<div class="form-group">
+								 <label for="lastname" class="col-sm-2 control-label">部门</label>
+								<#if loginUser.dept?has_content == false>
+									<!-- 超级管理员，dept为空，输入框可编辑 -->
+									<div class="col-sm-8"><input type="text" class="form-control" name="dept"  maxlength="64" ></div>
+								<#else>
+									<!-- 部门管理员，dept有值，输入框只读 -->
+									<div class="col-sm-8"><input type="text" class="form-control" name="dept"  maxlength="64" value="${loginUser.dept}" readonly></div>
+								</#if>
+							</div>
+						</#if>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-2 control-label">AppName<font color="red">*</font></label>
                             <div class="col-sm-10"><input type="text" class="form-control" name="appname" placeholder="${I18n.system_please_input}AppName" maxlength="64" ></div>
@@ -156,10 +164,18 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal form" role="form" >
-						<div class="form-group">
-                            <label for="dept" class="col-sm-2 control-label">dept</label>
-                            <div class="col-sm-10"><input type="text" class="form-control" name="dept"  maxlength="64" ></div>
-                        </div>
+						<#if loginUser.role == 1>
+							<div class="form-group">
+								 <label for="dept" class="col-sm-2 control-label">dept</label>
+								<#if loginUser.dept?has_content == false>
+									<!-- 超级管理员，dept为空，输入框可编辑 -->
+									<div class="col-sm-8"><input type="text" class="form-control" name="dept"  maxlength="64" ></div>
+								<#else>
+									<!-- 部门管理员，dept有值，输入框只读 -->
+									<div class="col-sm-8"><input type="text" class="form-control" name="dept"  maxlength="64" value="${loginUser.dept}" readonly></div>
+								</#if>
+							</div>
+						</#if>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-2 control-label">AppName<font color="red">*</font></label>
                             <div class="col-sm-10"><input type="text" class="form-control" name="appname" placeholder="${I18n.system_please_input}AppName" maxlength="64" ></div>

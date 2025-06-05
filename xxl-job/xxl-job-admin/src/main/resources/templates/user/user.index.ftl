@@ -104,10 +104,18 @@
                         <label for="lastname" class="col-sm-2 control-label">${I18n.user_password}<font color="red">*</font></label>
                         <div class="col-sm-8"><input type="text" class="form-control" name="password" placeholder="${I18n.system_please_input}${I18n.user_password}" maxlength="20" ></div>
                     </div>
-   					<div class="form-group">
-                        <label for="dept" class="col-sm-2 control-label">部门</label>
-                        <div class="col-sm-8"><input type="text" class="form-control" name="dept" placeholder="请填写部门" maxlength="20" ></div>
-                    </div>
+					<#if loginUser.role == 1>
+						<div class="form-group">
+							 <label for="lastname" class="col-sm-2 control-label">部门</label>
+							<#if loginUser.dept?has_content == false>
+								<!-- 超级管理员，dept为空，输入框可编辑 -->
+								<div class="col-sm-8"><input type="text" class="form-control" name="dept"  maxlength="20" ></div>
+							<#else>
+								<!-- 部门管理员，dept有值，输入框只读 -->
+								<div class="col-sm-8"><input type="text" class="form-control" name="dept"  maxlength="20" value="${loginUser.dept}" readonly></div>
+							</#if>
+						</div>
+					</#if>
                     <div class="form-group">
                         <label for="lastname" class="col-sm-2 control-label">${I18n.user_role}<font color="red">*</font></label>
                         <div class="col-sm-10">
@@ -158,10 +166,18 @@
                         <label for="lastname" class="col-sm-2 control-label">${I18n.user_password}<font color="red">*</font></label>
                         <div class="col-sm-8"><input type="text" class="form-control" name="password" placeholder="${I18n.user_password_update_placeholder}" maxlength="20" ></div>
                     </div>
- 					<div class="form-group">
-                        <label for="dept" class="col-sm-2 control-label">部门<font color="red">*</font></label>
-                        <div class="col-sm-8"><input type="text" class="form-control" name="dept" placeholder="" maxlength="20" ></div>
-                    </div>
+   					<#if loginUser.role == 1>
+						<div class="form-group">
+							 <label for="lastname" class="col-sm-2 control-label">部门</label>
+							<#if loginUser.dept?has_content == false>
+								<!-- 超级管理员，dept为空，输入框可编辑 -->
+								<div class="col-sm-8"><input type="text" class="form-control" name="dept"  maxlength="20" ></div>
+							<#else>
+								<!-- 部门管理员，dept有值，输入框只读 -->
+								<div class="col-sm-8"><input type="text" class="form-control" name="dept"  maxlength="20" value="${loginUser.dept}" readonly></div>
+							</#if>
+						</div>
+					</#if>
                     <div class="form-group">
                         <label for="lastname" class="col-sm-2 control-label">${I18n.user_role}<font color="red">*</font></label>
                         <div class="col-sm-10">

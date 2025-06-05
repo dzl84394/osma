@@ -42,13 +42,16 @@ public class JobUserController {
 
     @RequestMapping
     @PermissionLimit(adminuser = true)
-    public String index(Model model) {
-
+    public String index(Model model,
+                        HttpServletRequest request,
+                        HttpServletResponse response) {
+        XxlJobUser user = loginService.ifLogin(request, response);
         // 执行器列表
-        List<XxlJobGroup> groupList = xxlJobGroupDao.findAll();
+        List<XxlJobGroup> groupList = xxlJobGroupDao.findAll2(user.getDept());
         model.addAttribute("groupList", groupList);
         List<String> depts = xxlJobUserDao.selectDistinctDept();
         model.addAttribute("deptList", depts);
+        model.addAttribute("dept", user.getDept());
         return "user/user.index";
     }
 
@@ -131,7 +134,7 @@ public class JobUserController {
         // avoid opt login seft
         XxlJobUser loginUser = PermissionInterceptor.getLoginUser(request);
         if (loginUser.getUsername().equals(xxlJobUser.getUsername())) {
-            return new ReturnT<String>(ReturnT.FAIL.getCode(), I18nUtil.getString("user_update_loginuser_limit"));
+            return new ReturnT<String>(ReturnT.FAIL.getCode(), I18nUtil.getString("user_update_loginuser_limit")+",不能编辑自己");
         }
 
         // valid password

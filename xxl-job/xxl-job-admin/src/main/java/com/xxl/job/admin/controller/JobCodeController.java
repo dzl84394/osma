@@ -1,9 +1,12 @@
 package com.xxl.job.admin.controller;
 
 import com.xxl.job.admin.controller.interceptor.PermissionInterceptor;
+import com.xxl.job.admin.core.model.OperateLog;
 import com.xxl.job.admin.core.model.XxlJobInfo;
 import com.xxl.job.admin.core.model.XxlJobLogGlue;
+import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
+import com.xxl.job.admin.dao.OperateLogDao;
 import com.xxl.job.admin.dao.XxlJobInfoDao;
 import com.xxl.job.admin.dao.XxlJobLogGlueDao;
 import com.xxl.job.core.biz.model.ReturnT;
@@ -31,6 +34,9 @@ public class JobCodeController {
 	private XxlJobInfoDao xxlJobInfoDao;
 	@Resource
 	private XxlJobLogGlueDao xxlJobLogGlueDao;
+
+	@Resource
+	OperateLogDao operateLogDao;
 
 	@RequestMapping
 	public String index(HttpServletRequest request, Model model, @RequestParam("jobId") int jobId) {
@@ -98,6 +104,11 @@ public class JobCodeController {
 
 		// remove code backup more than 30
 		xxlJobLogGlueDao.removeOld(existsJobInfo.getId(), 30);
+
+		XxlJobInfo  xxlJobInfo = xxlJobInfoDao.loadById(id);
+		XxlJobUser loginUser = PermissionInterceptor.getLoginUser(request);
+		OperateLog log = new OperateLog(xxlJobInfo,"删除任务",loginUser.getUsername());
+		operateLogDao.save(log);
 
 		return ReturnT.SUCCESS;
 	}

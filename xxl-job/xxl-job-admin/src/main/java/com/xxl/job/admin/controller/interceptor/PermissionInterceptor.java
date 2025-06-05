@@ -93,6 +93,7 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 	 * @param jobGroup
 	 */
 	public static void validJobGroupPermission(HttpServletRequest request, int jobGroup) {
+		//XxlJobUser loginUser = (XxlJobUser) request.getAttribute("loginUser");
 		XxlJobUser loginUser = getLoginUser(request);
 		if (!loginUser.validPermission(jobGroup)) {
 			throw new RuntimeException(I18nUtil.getString("system_permission_limit") + "[username="+ loginUser.getUsername() +"]");

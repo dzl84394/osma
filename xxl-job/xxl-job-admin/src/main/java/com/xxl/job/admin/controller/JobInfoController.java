@@ -3,6 +3,7 @@ package com.xxl.job.admin.controller;
 import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.interceptor.PermissionInterceptor;
 import com.xxl.job.admin.core.exception.XxlJobException;
+import com.xxl.job.admin.core.model.OperateLog;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobInfo;
 import com.xxl.job.admin.core.model.XxlJobUser;
@@ -11,6 +12,7 @@ import com.xxl.job.admin.core.scheduler.MisfireStrategyEnum;
 import com.xxl.job.admin.core.scheduler.ScheduleTypeEnum;
 import com.xxl.job.admin.core.thread.JobScheduleHelper;
 import com.xxl.job.admin.core.util.I18nUtil;
+import com.xxl.job.admin.dao.OperateLogDao;
 import com.xxl.job.admin.dao.XxlJobGroupDao;
 import com.xxl.job.admin.service.XxlJobService;
 import com.xxl.job.admin.service.impl.LoginService;
@@ -46,6 +48,11 @@ public class JobInfoController {
 	private XxlJobService xxlJobService;
 	@Resource
 	private LoginService loginService;
+
+	@Resource
+	OperateLogDao operateLogDao;
+
+
 	@RequestMapping
 	public String index(HttpServletRequest request
 			, HttpServletResponse response
@@ -102,6 +109,10 @@ public class JobInfoController {
 
 		// opt
 		XxlJobUser loginUser = PermissionInterceptor.getLoginUser(request);
+
+		OperateLog log = new OperateLog(jobInfo,"新增任务",loginUser.getUsername());
+		operateLogDao.save(log);
+
 		return xxlJobService.add(jobInfo, loginUser);
 	}
 	
@@ -113,24 +124,41 @@ public class JobInfoController {
 
 		// opt
 		XxlJobUser loginUser = PermissionInterceptor.getLoginUser(request);
+		OperateLog log = new OperateLog(jobInfo,"修改任务",loginUser.getUsername());
+		operateLogDao.save(log);
 		return xxlJobService.update(jobInfo, loginUser);
 	}
 	
 	@RequestMapping("/remove")
 	@ResponseBody
-	public ReturnT<String> remove(@RequestParam("id") int id) {
+	public ReturnT<String> remove(HttpServletRequest request,@RequestParam("id") int id) {
+
+		ReturnT<XxlJobInfo>  returnT = xxlJobService.loadById(id);
+		XxlJobUser loginUser = PermissionInterceptor.getLoginUser(request);
+		OperateLog log = new OperateLog(returnT.getContent(),"删除任务",loginUser.getUsername());
+		operateLogDao.save(log);
 		return xxlJobService.remove(id);
 	}
 	
 	@RequestMapping("/stop")
 	@ResponseBody
-	public ReturnT<String> pause(@RequestParam("id") int id) {
+	public ReturnT<String> pause(HttpServletRequest request,@RequestParam("id") int id) {
+		ReturnT<XxlJobInfo>  returnT = xxlJobService.loadById(id);
+		XxlJobUser loginUser = PermissionInterceptor.getLoginUser(request);
+		OperateLog log = new OperateLog(returnT.getContent(),"删除任务",loginUser.getUsername());
+		operateLogDao.save(log);
+
 		return xxlJobService.stop(id);
 	}
 	
 	@RequestMapping("/start")
 	@ResponseBody
-	public ReturnT<String> start(@RequestParam("id") int id) {
+	public ReturnT<String> start(HttpServletRequest request,@RequestParam("id") int id) {
+		ReturnT<XxlJobInfo>  returnT = xxlJobService.loadById(id);
+		XxlJobUser loginUser = PermissionInterceptor.getLoginUser(request);
+		OperateLog log = new OperateLog(returnT.getContent(),"删除任务",loginUser.getUsername());
+		operateLogDao.save(log);
+
 		return xxlJobService.start(id);
 	}
 	
