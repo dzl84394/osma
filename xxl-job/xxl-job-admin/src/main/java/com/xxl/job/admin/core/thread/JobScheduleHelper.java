@@ -379,7 +379,7 @@ public class JobScheduleHelper {
     /**
      * 检查任务是否会在维护窗口内执行
      */
-    public static boolean checkJobAffected(XxlJobInfo job,
+    public static Date checkJobAffected(XxlJobInfo job,
                                                           Date windowStart,
                                                           Date windowEnd) throws Exception {
         // 计算从窗口开始时间起的第一次执行时间
@@ -387,8 +387,8 @@ public class JobScheduleHelper {
         Date nextValidTime = generateNextValidTime(job, checkStartTime);
 
         if (nextValidTime != null && !nextValidTime.after(windowEnd)) {
-            return true;
+            return nextValidTime;
         }
-        return false;
+        return null;
     }
 }

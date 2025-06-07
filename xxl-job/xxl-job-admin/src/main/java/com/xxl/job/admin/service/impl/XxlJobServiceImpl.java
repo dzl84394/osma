@@ -67,13 +67,14 @@ public class XxlJobServiceImpl implements XxlJobService {
 		List<XxlJobInfo> jobs = xxlJobInfoDao.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
 		List<XxlJobInfo> list2 = new ArrayList<>();
 		for (XxlJobInfo job : jobs) {
-            boolean affectedJob = false;
+            Date affectedJob = null;
             try {
                 affectedJob = JobScheduleHelper.checkJobAffected(job, startDate, endDate);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            if (affectedJob){
+            if (affectedJob!=null){
+				job.setTriggerNextTime(affectedJob.getTime());
 				list2.add(job);
 			}
 		}

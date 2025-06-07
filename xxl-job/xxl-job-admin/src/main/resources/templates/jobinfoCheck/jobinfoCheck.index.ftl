@@ -47,6 +47,21 @@
                         </select>
                     </div>
                 </div>
+ 				<div class="col-xs-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="jobDesc" placeholder="${I18n.system_please_input}${I18n.jobinfo_field_jobdesc}" >
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="executorHandler" placeholder="${I18n.system_please_input}JobHandler" >
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="author" placeholder="${I18n.system_please_input}${I18n.jobinfo_field_author}" >
+                    </div>
+                </div>
 				<div class="col-xs-4">
               		<div class="input-group">
                 		<span class="input-group-addon">
@@ -58,9 +73,7 @@
 	            <div class="col-xs-1">
 	            	<button class="btn btn-block btn-info" id="searchBtn">${I18n.system_search}</button>
 	            </div>
-	            <div class="col-xs-1">
-	            	<button class="btn btn-block btn-success add" type="button">${I18n.jobinfo_field_add}</button>
-	            </div>
+
           	</div>
 	    	
 			<div class="row">
@@ -81,10 +94,10 @@
                                         <th name="executorParam" >${I18n.jobinfo_field_executorparam}</th>
 					                  	<th name="addTime" >addTime</th>
 					                  	<th name="updateTime" >updateTime</th>
+										<th name="triggerNextTime" >triggerNextTime</th>
 					                  	<th name="author" >${I18n.jobinfo_field_author}</th>
 					                  	<th name="alarmEmail" >${I18n.jobinfo_field_alarmemail}</th>
 					                  	<th name="triggerStatus" >${I18n.system_status}</th>
-					                  	<th>${I18n.system_opt}</th>
 					                </tr>
 				                </thead>
 				                <tbody></tbody>

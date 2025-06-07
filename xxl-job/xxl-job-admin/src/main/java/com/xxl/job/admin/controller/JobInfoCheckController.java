@@ -98,9 +98,12 @@ public class JobInfoCheckController {
 	@RequestMapping("/checkList")
 	@ResponseBody
 	public Map<String, Object> checkList(@RequestParam(value = "start", required = false, defaultValue = "0") int start,
-										@RequestParam(value = "length", required = false, defaultValue = "10") int length,
-										@RequestParam("jobGroup") int jobGroup,
-										@RequestParam("triggerStatus") int triggerStatus,
+										 @RequestParam(value = "length", required = false, defaultValue = "10") int length,
+										 @RequestParam("jobGroup") int jobGroup,
+										 @RequestParam("triggerStatus") int triggerStatus,
+										 @RequestParam("jobDesc") String jobDesc,
+										 @RequestParam("executorHandler") String executorHandler,
+										 @RequestParam("author") String author,
 										 @RequestParam(value = "filterTime", required = false, defaultValue = "") String filterTime) {
 		// parse param
 		Date startTime = null;
@@ -116,7 +119,7 @@ public class JobInfoCheckController {
 
 
 
-		return xxlJobService.checkList(start, length, jobGroup, triggerStatus, "", "", "",startTime,endTime);
+		return xxlJobService.checkList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author,startTime,endTime);
 	}
 
 	@RequestMapping("/add")

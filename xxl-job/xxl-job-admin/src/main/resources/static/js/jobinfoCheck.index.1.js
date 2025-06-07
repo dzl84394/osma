@@ -1,4 +1,38 @@
 $(function() {
+    var rangesConf = {};
+        rangesConf[I18n.daterangepicker_ranges_recent_hour] = [moment().subtract(1, 'hours'), moment()];
+        rangesConf[I18n.daterangepicker_ranges_today] = [moment().startOf('day'), moment().endOf('day')];
+        rangesConf[I18n.daterangepicker_ranges_yesterday] = [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')];
+        rangesConf[I18n.daterangepicker_ranges_this_month] = [moment().startOf('month'), moment().endOf('month')];
+        rangesConf[I18n.daterangepicker_ranges_last_month] = [moment().subtract(1, 'months').startOf('month'), moment().subtract(1, 'months').endOf('month')];
+        rangesConf[I18n.daterangepicker_ranges_recent_week] = [moment().subtract(1, 'weeks').startOf('day'), moment().endOf('day')];
+        rangesConf[I18n.daterangepicker_ranges_recent_month] = [moment().subtract(1, 'months').startOf('day'), moment().endOf('day')];
+
+
+    $('#filterTime').daterangepicker({
+        autoApply:false,
+        singleDatePicker:false,
+        showDropdowns:false,        // 是否显示年月选择条件
+		timePicker: true, 			// 是否显示小时和分钟选择条件
+		timePickerIncrement: 10, 	// 时间的增量，单位为分钟
+        timePicker24Hour : true,
+        opens : 'left', //日期选择框的弹出位置
+		ranges: rangesConf,
+        locale : {
+            format: 'YYYY-MM-DD HH:mm:ss',
+            separator : ' - ',
+            customRangeLabel : I18n.daterangepicker_custom_name ,
+            applyLabel : I18n.system_ok ,
+            cancelLabel : I18n.system_cancel ,
+            fromLabel : I18n.daterangepicker_custom_starttime ,
+            toLabel : I18n.daterangepicker_custom_endtime ,
+            daysOfWeek : I18n.daterangepicker_custom_daysofweek.split(',') ,        // '日', '一', '二', '三', '四', '五', '六'
+            monthNames : I18n.daterangepicker_custom_monthnames.split(',') ,        // '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'
+            firstDay : 1
+        },
+        startDate: rangesConf[I18n.daterangepicker_ranges_today][0],
+        endDate: rangesConf[I18n.daterangepicker_ranges_today][1]
+	});
 
 	// init date tables
 	var jobTable = $("#job_list").dataTable({
@@ -12,6 +46,11 @@ $(function() {
 	        	var obj = {};
 	        	obj.jobGroup = $('#jobGroup').val();
                 obj.triggerStatus = $('#triggerStatus').val();
+                obj.jobDesc = $('#jobDesc').val();
+                obj.executorHandler = $('#executorHandler').val();
+                obj.author = $('#author').val();
+                obj.start = d.start;
+                obj.length = d.length;
                 obj.filterTime = $('#filterTime').val();
                 return obj;
             }
@@ -58,7 +97,7 @@ $(function() {
 					},
 					{
 						"data": 'glueType',
-						"width":'25%',
+						"width":'15%',
 						"visible" : true,
 						"render": function ( data, type, row ) {
 							var glueTypeTitle = findGlueTypeTitle(row.glueType);
@@ -84,6 +123,14 @@ $(function() {
 	                		return data?moment(new Date(data)).format("YYYY-MM-DD HH:mm:ss"):"";
 	                	}
 	                },
+	                {
+                        "data": 'triggerNextTime',
+                        "visible" : true,
+                        "width":'15%',
+                        "render": function ( data, type, row ) {
+                            return data?moment(new Date(data)).format("YYYY-MM-DD HH:mm:ss"):"";
+                        }
+                    },
 	                { "data": 'author', "visible" : true, "width":'10%'},
 	                { "data": 'alarmEmail', "visible" : false},
 	                {
@@ -98,65 +145,6 @@ $(function() {
                                 return '<small class="label label-default" >STOP</small>';
                             }
 	                		return data;
-	                	}
-	                },
-	                {
-						"data": I18n.system_opt ,
-						"width":'10%',
-	                	"render": function ( data, type, row ) {
-	                		return function(){
-
-                                // status
-                                var start_stop_div = "";
-                                if (1 == row.triggerStatus ) {
-                                    start_stop_div = '<li><a href="javascript:void(0);" class="job_operate" _type="job_pause" >'+ I18n.jobinfo_opt_stop +'</a></li>\n';
-                                } else {
-                                    start_stop_div = '<li><a href="javascript:void(0);" class="job_operate" _type="job_resume" >'+ I18n.jobinfo_opt_start +'</a></li>\n';
-                                }
-
-                                // job_next_time_html
-								var job_next_time_html = '';
-								if (row.scheduleType == 'CRON' || row.scheduleType == 'FIX_RATE') {
-									job_next_time_html = '<li><a href="javascript:void(0);" class="job_next_time" >' + I18n.jobinfo_opt_next_time + '</a></li>\n';
-								}
-
-                                // log url
-                                var logHref = base_url +'/joblog?jobId='+ row.id;
-
-                                // code url
-                                var codeBtn = "";
-                                if ('BEAN' != row.glueType) {
-                                    var codeUrl = base_url +'/jobcode?jobId='+ row.id;
-                                    codeBtn = '<li><a href="'+ codeUrl +'" target="_blank" >GLUE IDE</a></li>\n';
-                                    codeBtn += '<li class="divider"></li>\n';
-                                }
-
-                                // data
-                                tableData['key'+row.id] = row;
-
-                                // opt
-                                var html = '<div class="btn-group">\n' +
-                                    '     <button type="button" class="btn btn-primary btn-sm">'+ I18n.system_opt +'</button>\n' +
-                                    '     <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">\n' +
-                                    '       <span class="caret"></span>\n' +
-                                    '       <span class="sr-only">Toggle Dropdown</span>\n' +
-                                    '     </button>\n' +
-                                    '     <ul class="dropdown-menu" role="menu" _id="'+ row.id +'" >\n' +
-                                    '       <li><a href="javascript:void(0);" class="job_trigger" >'+ I18n.jobinfo_opt_run +'</a></li>\n' +
-                                    '       <li><a href="'+ logHref +'">'+ I18n.jobinfo_opt_log +'</a></li>\n' +
-                                    '       <li><a href="javascript:void(0);" class="job_registryinfo" >' + I18n.jobinfo_opt_registryinfo + '</a></li>\n' +
-									job_next_time_html +
-                                    '       <li class="divider"></li>\n' +
-                                    codeBtn +
-                                    start_stop_div +
-                                    '       <li><a href="javascript:void(0);" class="update" >'+ I18n.system_opt_edit +'</a></li>\n' +
-                                    '       <li><a href="javascript:void(0);" class="job_operate" _type="job_del" >'+ I18n.system_opt_del +'</a></li>\n' +
-									'       <li><a href="javascript:void(0);" class="job_copy" >'+ I18n.system_opt_copy +'</a></li>\n' +
-                                    '     </ul>\n' +
-                                    '   </div>';
-
-	                			return html;
-							};
 	                	}
 	                }
 	            ],
@@ -619,38 +607,5 @@ $(function() {
 		$('#addModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
 
-    var rangesConf = {};
-    rangesConf[I18n.daterangepicker_ranges_recent_hour] = [moment().subtract(1, 'hours'), moment()];
-    rangesConf[I18n.daterangepicker_ranges_today] = [moment().startOf('day'), moment().endOf('day')];
-    rangesConf[I18n.daterangepicker_ranges_yesterday] = [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')];
-    rangesConf[I18n.daterangepicker_ranges_this_month] = [moment().startOf('month'), moment().endOf('month')];
-    rangesConf[I18n.daterangepicker_ranges_last_month] = [moment().subtract(1, 'months').startOf('month'), moment().subtract(1, 'months').endOf('month')];
-    rangesConf[I18n.daterangepicker_ranges_recent_week] = [moment().subtract(1, 'weeks').startOf('day'), moment().endOf('day')];
-    rangesConf[I18n.daterangepicker_ranges_recent_month] = [moment().subtract(1, 'months').startOf('day'), moment().endOf('day')];
 
-
-    $('#filterTime').daterangepicker({
-        autoApply:false,
-        singleDatePicker:false,
-        showDropdowns:false,        // 是否显示年月选择条件
-		timePicker: true, 			// 是否显示小时和分钟选择条件
-		timePickerIncrement: 10, 	// 时间的增量，单位为分钟
-        timePicker24Hour : true,
-        opens : 'left', //日期选择框的弹出位置
-		ranges: rangesConf,
-        locale : {
-            format: 'YYYY-MM-DD HH:mm:ss',
-            separator : ' - ',
-            customRangeLabel : I18n.daterangepicker_custom_name ,
-            applyLabel : I18n.system_ok ,
-            cancelLabel : I18n.system_cancel ,
-            fromLabel : I18n.daterangepicker_custom_starttime ,
-            toLabel : I18n.daterangepicker_custom_endtime ,
-            daysOfWeek : I18n.daterangepicker_custom_daysofweek.split(',') ,        // '日', '一', '二', '三', '四', '五', '六'
-            monthNames : I18n.daterangepicker_custom_monthnames.split(',') ,        // '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'
-            firstDay : 1
-        },
-        startDate: rangesConf[I18n.daterangepicker_ranges_today][0],
-        endDate: rangesConf[I18n.daterangepicker_ranges_today][1]
-	});
 });
