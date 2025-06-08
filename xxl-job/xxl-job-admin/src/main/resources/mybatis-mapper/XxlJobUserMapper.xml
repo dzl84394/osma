@@ -39,6 +39,26 @@
 		LIMIT #{offset}, #{pagesize}
 	</select>
 
+
+	<select id="findList" parameterType="java.util.HashMap" resultMap="XxlJobUser">
+		SELECT <include refid="Base_Column_List" />
+		FROM xxl_job_user AS t
+		<trim prefix="WHERE" prefixOverrides="AND | OR" >
+			<if test="username != null and username != ''">
+				AND t.username like CONCAT(CONCAT('%', #{username}), '%')
+			</if>
+			<if test="role gt -1">
+				AND t.role = #{role}
+			</if>
+			<if test="dept != null and dept != ''">
+				AND t.dept LIKE CONCAT('%', #{dept}, '%')
+			</if>
+		</trim>
+		ORDER BY username ASC
+
+	</select>
+
+
 	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
 		SELECT count(1)
 		FROM xxl_job_user AS t

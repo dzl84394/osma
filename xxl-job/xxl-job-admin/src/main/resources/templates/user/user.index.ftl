@@ -35,14 +35,14 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-2">
                     <div class="input-group">
                         <span class="input-group-addon">${I18n.user_username}</span>
                         <input type="text" class="form-control" id="username" autocomplete="on" >
                     </div>
                 </div>
 				<#if loginUser.role == 1 && (loginUser.dept?has_content == false)>
-					<div class="col-xs-3">
+					<div class="col-xs-2">
 						<div class="input-group">
 							<span class="input-group-addon">部门</span>
 							<input type="text" class="form-control" id="dept" autocomplete="on" >
@@ -52,8 +52,11 @@
 	            <div class="col-xs-1">
 	            	<button class="btn btn-block btn-info" id="searchBtn">${I18n.system_search}</button>
 	            </div>
-	            <div class="col-xs-2">
+	            <div class="col-xs-1">
 	            	<button class="btn btn-block btn-success add" type="button">${I18n.user_add}</button>
+	            </div>
+ 				<div class="col-xs-1">
+	            	<button class="btn btn-block btn-success"  id="exportBtn"type="button">导出</button>
 	            </div>
           	</div>
 	    	

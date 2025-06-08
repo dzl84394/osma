@@ -1,5 +1,7 @@
 package com.xxl.job.admin.controller;
 
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
 import com.xxl.job.admin.controller.interceptor.PermissionInterceptor;
@@ -13,16 +15,20 @@ import com.xxl.job.admin.dao.XxlJobUserDao;
 import com.xxl.job.admin.service.impl.LoginService;
 import com.xxl.job.core.biz.model.ReturnT;
 import jakarta.annotation.Resource;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -225,6 +231,52 @@ public class JobUserController {
         OperateLog log = new OperateLog(existUser,"修改密码",loginUser.getUsername());
         operateLogDao.save(log);
         return ReturnT.SUCCESS;
+    }
+
+    @RequestMapping("/export")
+    @ResponseBody
+    public void exportUserExcel(@RequestParam("username") String username,
+                                @RequestParam("role") int role,
+                                @RequestParam(value = "dept", required = false, defaultValue = "") String dept,
+                                HttpServletResponse response) {
+        List<XxlJobUser> list = xxlJobUserDao.findList(username, role, dept);
+        try {
+            exportUserExcelWithHutool(response, list);
+        } catch (Exception e) {
+            // 这里可以根据需要记录日志，或者返回错误信息
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void exportUserExcelWithHutool(HttpServletResponse response, List<XxlJobUser> userList) throws IOException {
+
+        // 设置响应头，告诉浏览器这是个 Excel 文件
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        String fileName = URLEncoder.encode("XXL-JOB用户列表.xlsx", "UTF-8");
+        // Content-Disposition 格式更规范，filename*=UTF-8'' + 编码后的文件名
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
+
+        try (ServletOutputStream out = response.getOutputStream();
+             ExcelWriter writer = ExcelUtil.getWriter(true)) { // true 表示 xlsx 格式
+
+            // 自定义表头
+            writer.addHeaderAlias("id", "用户ID");
+            writer.addHeaderAlias("username", "用户名");
+            writer.addHeaderAlias("dept", "部门");
+            writer.addHeaderAlias("role", "角色");
+            writer.addHeaderAlias("permission", "权限");
+
+            // 只导出你设置了别名的字段，排除 passwd
+            writer.setOnlyAlias(true);
+
+            // 写入数据，自动使用别名作为表头
+            writer.write(userList, true);
+
+            // 将 Excel 写入响应输出流，第二个参数 true 表示写完后关闭流
+            writer.flush(out, true);
+        }
     }
 
 }

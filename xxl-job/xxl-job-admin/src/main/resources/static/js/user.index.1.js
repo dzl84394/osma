@@ -112,7 +112,30 @@ $(function() {
 	$('#searchBtn').on('click', function(){
         userListTable.fnDraw();
 	});
-	
+
+	//导出
+    $('#exportBtn').on('click', function(){
+        var obj = {};
+        obj.username = $('#username').val();
+        obj.role = $('#role').val();
+        obj.dept = $('#dept').val();
+
+        // 创建隐藏表单
+       var $form = $('<form method="POST" action="' + base_url + '/user/export"></form>');
+
+       // 添加参数为隐藏 input
+       for (var key in obj) {
+           if (obj.hasOwnProperty(key)) {
+               var $input = $('<input type="hidden" name="' + key + '" />').val(obj[key]);
+               $form.append($input);
+           }
+       }
+
+       // 把表单添加到 body，提交后移除
+       $form.appendTo('body').submit().remove();
+    });
+
+
 	// job operate
 	$("#user_list").on('click', '.delete',function() {
 		var id = $(this).parent('p').attr("id");

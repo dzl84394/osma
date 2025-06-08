@@ -16,6 +16,11 @@ public interface XxlJobUserDao {
                                      @Param("username") String username,
 									 @Param("role") int role,
 									 @Param("dept") String dept);
+	public List<XxlJobUser> findList(
+									 @Param("username") String username,
+									 @Param("role") int role,
+									 @Param("dept") String dept);
+
 	public int pageListCount(@Param("offset") int offset,
 							 @Param("pagesize") int pagesize,
 							 @Param("username") String username,
