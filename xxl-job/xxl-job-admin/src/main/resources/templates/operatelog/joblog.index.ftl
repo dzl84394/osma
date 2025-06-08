@@ -48,17 +48,7 @@
 	              	</div>
 	            </div>
 
-                <div class="col-xs-2">
-                    <div class="input-group">
-                        <span class="input-group-addon">${I18n.joblog_status}</span>
-                        <select class="form-control" id="logStatus" >
-                            <option value="-1" >${I18n.joblog_status_all}</option>
-                            <option value="1" >${I18n.joblog_status_suc}</option>
-                            <option value="2" >${I18n.joblog_status_fail}</option>
-                            <option value="3" >${I18n.joblog_status_running}</option>
-                        </select>
-                    </div>
-                </div>
+
 
 	            <div class="col-xs-4">
               		<div class="input-group">
@@ -86,6 +76,7 @@
 			              	<table id="joblog_list" class="table table-bordered table-striped display" width="100%" >
 				                <thead>
 					            	<tr>
+ 										<th name="userId" >userId</th>
                                         <th name="appId" >jobGroup</th>
  										<th name="jobId" >jobId</th>
                                       	<th name="username" >操作人</th>

@@ -8,6 +8,7 @@ import java.util.Date;
 
 public class OperateLog {
     private Long id;                      // 主键ID
+    private Long userId;      // 应用名称
     private Long appId;      // 应用名称
     private String username;             // 操作用户
     private String operationType;        // 操作类型（编辑、删除等）
@@ -91,6 +92,22 @@ public class OperateLog {
     }
 
     public OperateLog() {
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public OperateLog(XxlJobUser user, String operationType, String username) {
+        this.userId = (long) user.getId();
+        this.username = username;
+        this.operationType =  operationType;
+        this.record = JacksonUtil.writeValueAsString(user);
+        this.operateTime = new Date();
     }
 
     public OperateLog(XxlJobGroup xxlJobGroup,String operationType,String username) {

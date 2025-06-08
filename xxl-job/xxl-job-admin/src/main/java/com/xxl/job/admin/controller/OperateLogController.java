@@ -108,7 +108,6 @@ public class OperateLogController {
 										@RequestParam(value = "length", required = false, defaultValue = "10") int length,
 										@RequestParam("jobGroup") int jobGroup,
 										@RequestParam("jobId") int jobId,
-										@RequestParam("logStatus") int logStatus,
 										@RequestParam("filterTime") String filterTime) {
 
 		// valid permission

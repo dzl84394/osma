@@ -81,7 +81,6 @@ $(function() {
 	        	var obj = {};
 	        	obj.jobGroup = $('#jobGroup').val();
 	        	obj.jobId = $('#jobId').val();
-                obj.logStatus = $('#logStatus').val();
 				obj.filterTime = $('#filterTime').val();
 	        	obj.start = d.start;
 	        	obj.length = d.length;
@@ -92,6 +91,12 @@ $(function() {
 	    "ordering": false,
 	    //"scrollX": false,
 	    "columns": [
+	                {
+                        "data": 'userId',
+                        "visible" : true,
+                        "width":'10%'
+
+                    },
 					{
 						"data": 'appId',
 						"visible" : true,

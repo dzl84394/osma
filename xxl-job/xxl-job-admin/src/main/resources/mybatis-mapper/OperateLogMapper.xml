@@ -8,13 +8,17 @@
     <resultMap id="BaseResultMap" type="com.xxl.job.admin.core.model.OperateLog">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="app_id" property="appId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="job_id" property="jobId" jdbcType="BIGINT"/>
+
         <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="operation_type" property="operationType" jdbcType="VARCHAR"/>
-        <result column="job_id" property="jobId" jdbcType="BIGINT"/>
         <result column="record" property="record" jdbcType="LONGVARCHAR"/>
         <result column="old_value" property="oldValue" jdbcType="LONGVARCHAR"/>
         <result column="new_value" property="newValue" jdbcType="LONGVARCHAR"/>
         <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP"/>
+
+
     </resultMap>
 
     <select id="selectById" parameterType="long" resultMap="BaseResultMap">
@@ -84,7 +88,7 @@
     </select>
 
     <insert id="save" parameterType="com.xxl.job.admin.core.model.OperateLog" useGeneratedKeys="true" keyProperty="id" >
-        INSERT INTO operate_log ( `app_id`, `username`, `operation_type`, `job_id`, `record`,`operate_time`)
-        values ( #{appId}, #{username}, #{operationType}, #{jobId}, #{record}, #{operateTime} );
+        INSERT INTO operate_log (`user_id`, `app_id`, `job_id`, `username`, `operation_type`, `record`,`operate_time`)
+        values ( #{userId}, #{appId}, #{jobId}, #{username}, #{operationType}, #{record}, #{operateTime} );
     </insert>
 </mapper>

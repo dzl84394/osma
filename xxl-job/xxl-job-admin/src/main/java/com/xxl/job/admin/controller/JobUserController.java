@@ -3,9 +3,11 @@ package com.xxl.job.admin.controller;
 import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
 import com.xxl.job.admin.controller.interceptor.PermissionInterceptor;
+import com.xxl.job.admin.core.model.OperateLog;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
+import com.xxl.job.admin.dao.OperateLogDao;
 import com.xxl.job.admin.dao.XxlJobGroupDao;
 import com.xxl.job.admin.dao.XxlJobUserDao;
 import com.xxl.job.admin.service.impl.LoginService;
@@ -39,6 +41,10 @@ public class JobUserController {
 
     @Resource
     private LoginService loginService;
+
+    @Resource
+    OperateLogDao operateLogDao;
+
 
     @RequestMapping
     @PermissionLimit(adminuser = true)
@@ -94,7 +100,7 @@ public class JobUserController {
     @RequestMapping("/add")
     @ResponseBody
     @PermissionLimit(adminuser = true)
-    public ReturnT<String> add(XxlJobUser xxlJobUser) {
+    public ReturnT<String> add(XxlJobUser xxlJobUser,HttpServletRequest request) {
 
         // valid username
         if (!StringUtils.hasText(xxlJobUser.getUsername())) {
@@ -123,6 +129,10 @@ public class JobUserController {
 
         // write
         xxlJobUserDao.save(xxlJobUser);
+        XxlJobUser loginUser = PermissionInterceptor.getLoginUser(request);
+        OperateLog log = new OperateLog(xxlJobUser,"新增用户",loginUser.getUsername());
+        operateLogDao.save(log);
+
         return ReturnT.SUCCESS;
     }
 
@@ -151,6 +161,10 @@ public class JobUserController {
 
         // write
         xxlJobUserDao.update(xxlJobUser);
+
+        OperateLog log = new OperateLog(xxlJobUser,"编辑用户",loginUser.getUsername());
+        operateLogDao.save(log);
+
         return ReturnT.SUCCESS;
     }
 
@@ -164,8 +178,13 @@ public class JobUserController {
         if (loginUser.getId() == id) {
             return new ReturnT<String>(ReturnT.FAIL.getCode(), I18nUtil.getString("user_update_loginuser_limit"));
         }
+        XxlJobUser old = xxlJobUserDao.load(id);
 
         xxlJobUserDao.delete(id);
+
+        OperateLog log = new OperateLog(old,"删除用户",loginUser.getUsername());
+        operateLogDao.save(log);
+
         return ReturnT.SUCCESS;
     }
 
@@ -202,6 +221,9 @@ public class JobUserController {
         existUser.setPassword(md5Password);
         xxlJobUserDao.update(existUser);
 
+
+        OperateLog log = new OperateLog(existUser,"修改密码",loginUser.getUsername());
+        operateLogDao.save(log);
         return ReturnT.SUCCESS;
     }
 

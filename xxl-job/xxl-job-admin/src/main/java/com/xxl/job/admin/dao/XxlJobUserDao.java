@@ -24,9 +24,13 @@ public interface XxlJobUserDao {
 
 	public XxlJobUser loadByUserName(@Param("username") String username);
 
+	public XxlJobUser load(@Param("id") int id);
+
 	public int save(XxlJobUser xxlJobUser);
 
 	public int update(XxlJobUser xxlJobUser);
+
+
 	
 	public int delete(@Param("id") int id);
 	// 查询所有不同的部门名称
