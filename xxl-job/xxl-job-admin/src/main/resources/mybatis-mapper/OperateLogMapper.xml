@@ -31,8 +31,24 @@
         ORDER BY operate_time DESC
     </select>
 
-    <select id="selectPage" resultMap="BaseResultMap">
+
+
+    <select id="selectPage" resultMap="BaseResultMap" parameterType="map">
         SELECT * FROM operate_log
+        <where>
+            <if test="jobGroup != 0">
+                AND app_id = #{jobGroup}
+            </if>
+            <if test="jobId != 0">
+                AND job_id = #{jobId}
+            </if>
+            <if test="triggerTimeStart != null">
+                AND operate_time &gt;= #{triggerTimeStart}
+            </if>
+            <if test="triggerTimeEnd != null">
+                AND operate_time &lt;= #{triggerTimeEnd}
+            </if>
+        </where>
         ORDER BY operate_time DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
@@ -44,8 +60,23 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <select id="countAll" resultType="int">
+
+    <select id="pageListCount" resultType="int" parameterType="map">
         SELECT COUNT(*) FROM operate_log
+        <where>
+            <if test="jobGroup != 0">
+                AND app_id = #{jobGroup}
+            </if>
+            <if test="jobId != 0">
+                AND job_id = #{jobId}
+            </if>
+            <if test="triggerTimeStart != null">
+                AND operate_time &gt;= #{triggerTimeStart}
+            </if>
+            <if test="triggerTimeEnd != null">
+                AND operate_time &lt;= #{triggerTimeEnd}
+            </if>
+        </where>
     </select>
 
     <select id="countByJobId" parameterType="long" resultType="int">

@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -22,7 +23,11 @@ public interface OperateLogDao {
 
     // 分页查询所有操作日志，按操作时间倒序
     List<OperateLog> selectPage(@Param("offset") int offset,
-                                @Param("limit") int limit);
+                                @Param("limit") int limit,
+                                @Param("jobGroup") int jobGroup,
+                                @Param("jobId") int jobId,
+                                @Param("triggerTimeStart") Date triggerTimeStart,
+                                @Param("triggerTimeEnd") Date triggerTimeEnd);
 
     // 分页查询某任务ID的操作日志
     List<OperateLog> selectPageByJobId(@Param("jobId") Long jobId,
@@ -30,7 +35,12 @@ public interface OperateLogDao {
                                        @Param("limit") int limit);
 
     // 统计总记录数（分页用）
-    int countAll();
+    int pageListCount(@Param("offset") int offset,
+                 @Param("limit") int limit,
+                 @Param("jobGroup") int jobGroup,
+                 @Param("jobId") int jobId,
+                 @Param("triggerTimeStart") Date triggerTimeStart,
+                 @Param("triggerTimeEnd") Date triggerTimeEnd);
 
     // 统计某任务ID的记录数
     int countByJobId(@Param("jobId") Long jobId);
