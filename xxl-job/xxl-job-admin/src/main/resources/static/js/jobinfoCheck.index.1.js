@@ -182,6 +182,31 @@ $(function() {
 		jobTable.fnDraw();
 	});
 
+//导出
+    $('#exportBtn').on('click', function(){
+        var obj = {};
+        obj.jobGroup = $('#jobGroup').val();
+        obj.triggerStatus = $('#triggerStatus').val();
+        obj.jobDesc = $('#jobDesc').val();
+        obj.executorHandler = $('#executorHandler').val();
+        obj.author = $('#author').val();
+        obj.filterTime = $('#filterTime').val();
+
+        // 创建隐藏表单
+       var $form = $('<form method="POST" action="' + base_url + '/jobinfoCheck/export"></form>');
+
+       // 添加参数为隐藏 input
+       for (var key in obj) {
+           if (obj.hasOwnProperty(key)) {
+               var $input = $('<input type="hidden" name="' + key + '" />').val(obj[key]);
+               $form.append($input);
+           }
+       }
+
+       // 把表单添加到 body，提交后移除
+       $form.appendTo('body').submit().remove();
+    });
+
 	// jobGroup change
 	$('#jobGroup').on('change', function(){
         //reload

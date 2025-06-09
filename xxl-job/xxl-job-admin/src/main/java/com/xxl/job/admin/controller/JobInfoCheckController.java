@@ -1,8 +1,11 @@
 package com.xxl.job.admin.controller;
 
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.interceptor.PermissionInterceptor;
 import com.xxl.job.admin.core.exception.XxlJobException;
+import com.xxl.job.admin.core.model.OperateLog;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobInfo;
 import com.xxl.job.admin.core.model.XxlJobUser;
@@ -19,6 +22,7 @@ import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import com.xxl.job.core.util.DateUtil;
 import jakarta.annotation.Resource;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -29,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -202,5 +208,78 @@ public class JobInfoCheckController {
 		return new ReturnT<List<String>>(result);
 
 	}
-	
+
+
+	@RequestMapping("/export")
+	@ResponseBody
+	public void exportUserExcel(HttpServletRequest request,
+								@RequestParam("jobGroup") int jobGroup,
+								@RequestParam("triggerStatus") int triggerStatus,
+								@RequestParam("jobDesc") String jobDesc,
+								@RequestParam("executorHandler") String executorHandler,
+								@RequestParam("author") String author,
+								@RequestParam(value = "filterTime", required = false, defaultValue = "") String filterTime,
+								HttpServletResponse response) {
+		// valid permission
+		PermissionInterceptor.validJobGroupPermission(request, jobGroup);	// 仅管理员支持查询全部；普通用户仅支持查询有权限的 jobGroup
+
+		Date startTime = null;
+		Date endTime = null;
+		if (filterTime!=null && filterTime.trim().length()>0) {
+			String[] temp = filterTime.split(" - ");
+			if (temp.length == 2) {
+				startTime = DateUtil.parseDateTime(temp[0]);
+				endTime = DateUtil.parseDateTime(temp[1]);
+			}
+		}
+
+
+
+
+		Map<String, Object> map = xxlJobService.checkList( 0,10000,jobGroup, triggerStatus, jobDesc, executorHandler, author,startTime,endTime);
+
+		List<XxlJobInfo> list  = (List<XxlJobInfo>) map.get("data");
+
+		try {
+			exportUserExcelWithHutool(response, list);
+		} catch (Exception e) {
+			// 这里可以根据需要记录日志，或者返回错误信息
+			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public void exportUserExcelWithHutool(HttpServletResponse response, List<XxlJobInfo> userList) throws IOException {
+
+		// 设置响应头，告诉浏览器这是个 Excel 文件
+		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		response.setCharacterEncoding("utf-8");
+		String fileName = URLEncoder.encode("XXL-JOB停服检查任务表.xlsx", "UTF-8");
+		// Content-Disposition 格式更规范，filename*=UTF-8'' + 编码后的文件名
+		response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
+
+		try (ServletOutputStream out = response.getOutputStream();
+			 ExcelWriter writer = ExcelUtil.getWriter(true)) { // true 表示 xlsx 格式
+
+			// 自定义表头
+			writer.addHeaderAlias("id", "id");
+			writer.addHeaderAlias("jobDesc", "任务名称");
+
+			writer.addHeaderAlias("jobGroup", "执行器id");
+			writer.addHeaderAlias("scheduleType", "任务类型");
+			writer.addHeaderAlias("scheduleConf", "任务配置");
+			writer.addHeaderAlias("triggerStatus", "状态");
+			writer.addHeaderAlias("triggerNextDate", "下次执行时间");
+
+			// 只导出你设置了别名的字段，排除 passwd
+			writer.setOnlyAlias(true);
+
+			// 写入数据，自动使用别名作为表头
+			writer.write(userList, true);
+
+			// 将 Excel 写入响应输出流，第二个参数 true 表示写完后关闭流
+			writer.flush(out, true);
+		}
+	}
+
 }

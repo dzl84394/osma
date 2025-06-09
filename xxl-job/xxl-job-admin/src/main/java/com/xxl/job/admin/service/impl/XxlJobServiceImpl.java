@@ -75,6 +75,7 @@ public class XxlJobServiceImpl implements XxlJobService {
             }
             if (affectedJob!=null){
 				job.setTriggerNextTime(affectedJob.getTime());
+				job.setTriggerNextDate(new Date(affectedJob.getTime()));
 				list2.add(job);
 			}
 		}

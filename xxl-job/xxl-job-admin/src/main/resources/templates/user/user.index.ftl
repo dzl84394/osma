@@ -56,7 +56,7 @@
 	            	<button class="btn btn-block btn-success add" type="button">${I18n.user_add}</button>
 	            </div>
  				<div class="col-xs-1">
-	            	<button class="btn btn-block btn-success"  id="exportBtn"type="button">导出</button>
+	            	<button class="btn btn-block btn-default"  id="exportBtn"type="button">导出</button>
 	            </div>
           	</div>
 	    	

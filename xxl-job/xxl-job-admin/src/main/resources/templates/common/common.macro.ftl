@@ -143,8 +143,8 @@
 				<li class="nav-click <#if pageName == "joblog">active</#if>" ><a href="${request.contextPath}/joblog"><i class="fa fa-circle-o text-green"></i><span>${I18n.joblog_name}</span></a></li>
 
 				<#if loginUser.role == 1>
-					<li class="nav-click <#if pageName == "jobinfoCheck">active</#if>" ><a href="${request.contextPath}/jobinfoCheck"><i class="fa fa-circle-o text-green"></i><span>任务检查</span></a></li>
-					<li class="nav-click <#if pageName == "joblog">active</#if>" ><a href="${request.contextPath}/operateLog"><i class="fa fa-circle-o text-green"></i><span>操作记录</span></a></li>
+					<li class="nav-click <#if pageName == "jobinfoCheck">active</#if>" ><a href="${request.contextPath}/jobinfoCheck"><i class="fa fa-circle-o text-black"></i><span>任务检查</span></a></li>
+					<li class="nav-click <#if pageName == "joblog">active</#if>" ><a href="${request.contextPath}/operateLog"><i class="fa fa-circle-o text-blue"></i><span>操作记录</span></a></li>
                     <li class="nav-click <#if pageName == "jobgroup">active</#if>" ><a href="${request.contextPath}/jobgroup"><i class="fa fa-circle-o text-red"></i><span>${I18n.jobgroup_name}</span></a></li>
                     <li class="nav-click <#if pageName == "user">active</#if>" ><a href="${request.contextPath}/user"><i class="fa fa-circle-o text-purple"></i><span>${I18n.user_manage}</span></a></li>
 				</#if>
