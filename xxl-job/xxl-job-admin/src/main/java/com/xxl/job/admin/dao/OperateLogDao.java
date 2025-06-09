@@ -29,6 +29,12 @@ public interface OperateLogDao {
                                 @Param("triggerTimeStart") Date triggerTimeStart,
                                 @Param("triggerTimeEnd") Date triggerTimeEnd);
 
+    List<OperateLog> selectList(
+                                @Param("jobGroup") int jobGroup,
+                                @Param("jobId") int jobId,
+                                @Param("triggerTimeStart") Date triggerTimeStart,
+                                @Param("triggerTimeEnd") Date triggerTimeEnd);
+
     // 分页查询某任务ID的操作日志
     List<OperateLog> selectPageByJobId(@Param("jobId") Long jobId,
                                        @Param("offset") int offset,

@@ -64,7 +64,7 @@
                 </div>
 
 	            <div class="col-xs-1">
-                    <button class="btn btn-block btn-default" id="clearLog">导出</button>
+                    <button class="btn btn-block btn-default" id="exportBtn">导出</button>
 	            </div>
           	</div>
 			
@@ -79,7 +79,7 @@
  										<th name="userId" >userId</th>
                                         <th name="appId" >jobGroup</th>
  										<th name="jobId" >jobId</th>
-                                      	<th name="username" >操作人</th>
+                                      	<th name="operateUm" >操作人</th>
                                         <th name="operationType" >动作</th>
                                         <th name="record" >内容</th>
 					                  	<th name="operateTime" >时间</th>

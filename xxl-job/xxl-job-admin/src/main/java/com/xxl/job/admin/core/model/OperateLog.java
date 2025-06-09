@@ -10,9 +10,10 @@ public class OperateLog {
     private Long id;                      // 主键ID
     private Long userId;      // 应用名称
     private Long appId;      // 应用名称
-    private String username;             // 操作用户
-    private String operationType;        // 操作类型（编辑、删除等）
     private Long jobId;                  // 关联任务ID
+    private String operateUm;             // 操作用户
+    private String operationType;        // 操作类型（编辑、删除等）
+
     private String record;               // 操作描述或备注
     private String oldValue;             // 修改前的值（JSON或字符串）
     private String newValue;             // 修改后的值（可选）
@@ -35,12 +36,12 @@ public class OperateLog {
         this.appId = appId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getOperateUm() {
+        return operateUm;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setOperateUm(String operateUm) {
+        this.operateUm = operateUm;
     }
 
     public String getOperationType() {
@@ -104,7 +105,7 @@ public class OperateLog {
 
     public OperateLog(XxlJobUser user, String operationType, String username) {
         this.userId = (long) user.getId();
-        this.username = username;
+        this.operateUm = username;
         this.operationType =  operationType;
         this.record = JacksonUtil.writeValueAsString(user);
         this.operateTime = new Date();
@@ -112,7 +113,7 @@ public class OperateLog {
 
     public OperateLog(XxlJobGroup xxlJobGroup,String operationType,String username) {
         this.appId = (long) xxlJobGroup.getId();
-        this.username = username;
+        this.operateUm = username;
         this.operationType =  operationType;
         this.record = JacksonUtil.writeValueAsString(xxlJobGroup);
         this.operateTime = new Date();
@@ -120,7 +121,7 @@ public class OperateLog {
 
     public OperateLog(XxlJobInfo jobInfo,String operationType,String username) {
         this.appId = (long) jobInfo.getJobGroup();
-        this.username = username;
+        this.operateUm = username;
         this.operationType =  operationType;
         this.record = JacksonUtil.writeValueAsString(jobInfo);
         this.jobId = (long) jobInfo.getId();

@@ -1,5 +1,7 @@
 package com.xxl.job.admin.controller;
 
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.google.common.base.Strings;
 import com.xxl.job.admin.controller.interceptor.PermissionInterceptor;
 import com.xxl.job.admin.core.complete.XxlJobCompleter;
@@ -19,6 +21,7 @@ import com.xxl.job.core.biz.model.LogResult;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.util.DateUtil;
 import jakarta.annotation.Resource;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -31,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -298,6 +303,75 @@ public class OperateLogController {
 		} while (logIds!=null && logIds.size()>0);
 
 		return ReturnT.SUCCESS;
+	}
+
+
+
+	@RequestMapping("/export")
+	@ResponseBody
+	public void exportUserExcel(HttpServletRequest request,
+								@RequestParam("jobGroup") int jobGroup,
+								@RequestParam("jobId") int jobId,
+								@RequestParam("filterTime") String filterTime,
+								HttpServletResponse response) {
+		// valid permission
+		PermissionInterceptor.validJobGroupPermission(request, jobGroup);	// 仅管理员支持查询全部；普通用户仅支持查询有权限的 jobGroup
+
+		// parse param
+		Date triggerTimeStart = null;
+		Date triggerTimeEnd = null;
+		if (filterTime!=null && filterTime.trim().length()>0) {
+			String[] temp = filterTime.split(" - ");
+			if (temp.length == 2) {
+				triggerTimeStart = DateUtil.parseDateTime(temp[0]);
+				triggerTimeEnd = DateUtil.parseDateTime(temp[1]);
+			}
+		}
+
+		// page query
+		List<OperateLog> list = operateLogDao.selectList(jobGroup, jobId, triggerTimeStart, triggerTimeEnd);
+
+
+		try {
+			exportUserExcelWithHutool(response, list);
+		} catch (Exception e) {
+			// 这里可以根据需要记录日志，或者返回错误信息
+			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public void exportUserExcelWithHutool(HttpServletResponse response, List<OperateLog> userList) throws IOException {
+
+		// 设置响应头，告诉浏览器这是个 Excel 文件
+		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		response.setCharacterEncoding("utf-8");
+		String fileName = URLEncoder.encode("XXL-JOB操作日志.xlsx", "UTF-8");
+		// Content-Disposition 格式更规范，filename*=UTF-8'' + 编码后的文件名
+		response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
+
+		try (ServletOutputStream out = response.getOutputStream();
+			 ExcelWriter writer = ExcelUtil.getWriter(true)) { // true 表示 xlsx 格式
+
+			// 自定义表头
+			writer.addHeaderAlias("id", "id");
+			writer.addHeaderAlias("userId", "用户Id");
+			writer.addHeaderAlias("appId", "执行器Id");
+			writer.addHeaderAlias("jobId", "任务id");
+			writer.addHeaderAlias("operateUm", "操作人");
+			writer.addHeaderAlias("operationType", "操作类型");
+			writer.addHeaderAlias("operateTime", "操作时间");
+			writer.addHeaderAlias("record", "操作内容");
+
+			// 只导出你设置了别名的字段，排除 passwd
+			writer.setOnlyAlias(true);
+
+			// 写入数据，自动使用别名作为表头
+			writer.write(userList, true);
+
+			// 将 Excel 写入响应输出流，第二个参数 true 表示写完后关闭流
+			writer.flush(out, true);
+		}
 	}
 
 }

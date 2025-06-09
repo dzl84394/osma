@@ -11,11 +11,13 @@
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
         <result column="job_id" property="jobId" jdbcType="BIGINT"/>
 
-        <result column="username" property="username" jdbcType="VARCHAR"/>
-        <result column="operation_type" property="operationType" jdbcType="VARCHAR"/>
+
+
         <result column="record" property="record" jdbcType="LONGVARCHAR"/>
         <result column="old_value" property="oldValue" jdbcType="LONGVARCHAR"/>
         <result column="new_value" property="newValue" jdbcType="LONGVARCHAR"/>
+        <result column="operation_type" property="operationType" jdbcType="VARCHAR"/>
+        <result column="operate_um" property="operateUm" jdbcType="VARCHAR"/>
         <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP"/>
 
 
@@ -57,6 +59,27 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <select id="selectList" resultMap="BaseResultMap" parameterType="map">
+        SELECT * FROM operate_log
+        <where>
+            <if test="jobGroup != 0">
+                AND app_id = #{jobGroup}
+            </if>
+            <if test="jobId != 0">
+                AND job_id = #{jobId}
+            </if>
+            <if test="triggerTimeStart != null">
+                AND operate_time &gt;= #{triggerTimeStart}
+            </if>
+            <if test="triggerTimeEnd != null">
+                AND operate_time &lt;= #{triggerTimeEnd}
+            </if>
+        </where>
+        ORDER BY operate_time DESC
+
+    </select>
+
+
     <select id="selectPageByJobId" resultMap="BaseResultMap">
         SELECT * FROM operate_log
         WHERE job_id = #{jobId}
@@ -88,7 +111,7 @@
     </select>
 
     <insert id="save" parameterType="com.xxl.job.admin.core.model.OperateLog" useGeneratedKeys="true" keyProperty="id" >
-        INSERT INTO operate_log (`user_id`, `app_id`, `job_id`, `username`, `operation_type`, `record`,`operate_time`)
-        values ( #{userId}, #{appId}, #{jobId}, #{username}, #{operationType}, #{record}, #{operateTime} );
+        INSERT INTO operate_log (`user_id`, `app_id`, `job_id`, `operate_um`, `operation_type`, `record`,`operate_time`)
+        values ( #{userId}, #{appId}, #{jobId}, #{operateUm}, #{operationType}, #{record}, #{operateTime} );
     </insert>
 </mapper>
